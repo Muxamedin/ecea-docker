@@ -1,0 +1,4 @@
+#!/bin/bash
+
+touch /opt/ecloud/hello_i.txt
+echo Hello > /opt/ecloud/hello_i.txt
