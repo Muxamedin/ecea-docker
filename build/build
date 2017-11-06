@@ -5,9 +5,9 @@ function printErrorMsg() {
     echo "ERROR: $1"
     echo ""
     echo "Usage: $0 <build_target> <build_version> <build_imagedir>"
-	echo "1 <build_target>: agent | cm | emake ; #| full"
-	echo "2 <build_version>: in format like 10.0.0.0"
-	echo "3 <build_imagedir>: working build dir"
+    echo "1 <build_target>: agent | cm | emake ; #| full"
+    echo "2 <build_version>: in format like 10.0.0.0"
+    echo "3 <build_imagedir>: working build dir"
     exit 1
 }
 
