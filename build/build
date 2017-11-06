@@ -1,0 +1,22 @@
+#!/bin/sh
+# script for build docker images with electric-cloud accelerator applications
+function printErrorMsg() {
+    echo "ERROR: $1"
+    echo ""
+    echo "Usage: $0 <build-target>"
+    exit 1
+}
+if [ -z "$1" ]; then
+    printErrorMsg "no target specified" 
+fi
+TARGET=$1
+PWD_OLD=`pwd`
+BUILD_NAME=$PWD_OLD/
+echo  "------------------------------------------------------"
+echo "check for files  content"
+
+
+(set -x; docker build -t "$BUILD_IMAGE" .) 
+cd "$SAVED_PWD";rm -rf "$BUILD_DIR"
+echo 
+echo "Image built successfully: $BUILD_IMAGE"
