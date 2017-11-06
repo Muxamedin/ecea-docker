@@ -1,2 +1,3 @@
 #gitignore
-agent/**/ecloud
+agent/
+*.swp
