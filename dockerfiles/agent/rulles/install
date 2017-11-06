@@ -3,7 +3,7 @@
 #1. copy services in /etc/init.d
 #-----------ecagent-----------
 #copy file to init.d
-EC_ProductVersion=2017.10.11
+EC_ProductVersion=$BUILD_VERSION
 cp /opt/ecloud/i686_Linux/64/bin/ecagent.ignore.sh /etc/init.d/ecagent
 #change permissions
 /bin/chmod 755 /etc/init.d/ecagent

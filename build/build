@@ -1,7 +1,11 @@
 #!/bin/sh
 # script for build docker images with electric-cloud accelerator applications
-echo  $1 $2 
-echo  $3 
+
+#list args passed in commandline
+for arg in "$@"; do
+    echo "parameter: '$arg'"
+done
+
 printErrorMsg() {
     echo "ERROR: $1"
     echo ""
@@ -53,13 +57,11 @@ fi
 
 if ! [ -z "$3" ]; then
    BUILD_IMAGEDIR=$3
-  echo  "test1"
 else
-   echo "tewst2"
    BUILD_IMAGEDIR=$TOP/$TARGET
 fi
 
-logMsg "BUILD_IMAGEDIR - $BUILD_IMAGEDIR"
+#logMsg "BUILD_IMAGEDIR - $BUILD_IMAGEDIR"
 
 if ! [ -d $BUILD_IMAGEDIR ]; then
     printErrorMsg "Couldn't find BUILD_IMAGEDIR : $BUILD_IMAGEDIR"    
@@ -78,14 +80,13 @@ fi
 cp $DOCKER_FILE  $BUILD_IMAGEDIR/
 cp -r $RULLES_DIR  $BUILD_IMAGEDIR/opt/ecloud/
 cd $BUILD_IMAGEDIR
+chmod 755  $BUILD_IMAGEDIR/opt/ecloud/rulles/*
 #exit 0
 #build image
 if ! (docker build -t=$IMG_NAME  --build-arg  agent_version=$BUILD_VERSION . )  then 
    printErrorMsg "Image was not created!!!"
 fi
 #docker save $IMG_NAME > $IMG_NAME.tar
-
-
 #(set -x; docker build -t "$BUILD_IMAGE" .) 
 #save image $IMG_NAME to tar
 
