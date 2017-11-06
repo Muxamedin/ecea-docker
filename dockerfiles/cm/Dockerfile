@@ -1,26 +1,45 @@
-
+# choose system
+# ---------------------------------------------------
 FROM ubuntu:16.04
-#RUN  apt-get  install -y   gcc
+# ---------------------------------------------------
 
-ARG rulles_from
-ARG version
+# ---------------------------------------------------
+# options
+# ---------------------------------------------------
+ARG build_vesrion
+# ---------------------------------------------------
 
-ENV   BUILD_VERSION
-COPY  ecloud  /opt  
+# ---------------------------------------------------
+# environment section
+# ---------------------------------------------------
+ENV BUILD_VERSION=${build_vesrion}
+# ---------------------------------------------------
 
+# ---------------------------------------------------
+# install section
+# ---------------------------------------------------
+COPY  opt  /opt
+RUN chmod +x /opt/ecloud/install && \
+/opt/ecloud/install && \
+ rm  -f /opt/ecloud/install
+# --------------------------------------------------- 
 
-#
-COPY ${rulles_from}install_cm /opt/ecloud/ 
-COPY ${rulles_from}auto_cm /opt/ecloud/ 
-RUN chmod +x /opt/ecloud/i686_Linux/install_cm &&  /opt/ecloud/i686_Linux/install && rm  -f /opt/ecloud/i686_Linux/install
-
-#Ports to expose outside
+# ---------------------------------------------------
+# expose section
+# --------------------------------------------------- 
+# cm agent port
 EXPOSE 8030
+# cm agent secure port
 EXPOSE 8031
+#db
 EXPOSE 3306
+# http port
 EXPOSE 80
+# erunner port
 EXPOSE 2411
-
-# run on start container
-CMD ["/opt/ecloud/auto_cm"]
-
+ 
+# ---------------------------------------------------
+# supervisor script
+# ---------------------------------------------------
+CMD ["/opt/ecloud/supervisor"]
+# ---------------------------------------------------
