@@ -1,7 +1,8 @@
 #!/bin/sh
 # script for build docker images with electric-cloud accelerator applications
-
-function printErrorMsg() {
+echo  $1 $2 
+echo  $3 
+printErrorMsg() {
     echo "ERROR: $1"
     echo ""
     echo "Usage: $0 <build_target> <build_version> <build_imagedir>"
@@ -11,7 +12,7 @@ function printErrorMsg() {
     exit 1
 }
 
-function logMsg() {
+logMsg() {
     echo "<-log->| $1"    
 }
 
@@ -29,11 +30,13 @@ fi
 
 
 PWD=`pwd`
-TOP="../$PWD"
-BUILD_SRCDIRDIR=$TOP/dokerfiles/$TARGET
+TOP=".."
+
+BUILD_SRCDIR=$TOP/dockerfiles/$TARGET
 RULLES_DIR=$BUILD_SRCDIR/rulles
 DOCKER_FILE=$BUILD_SRCDIR/Dockerfile
-IMG_NAME="$TARGET_${BUILD_VERSION:0:2}_alpha"
+
+IMG_NAME="${TARGET}_${BUILD_VERSION}_alpha"
 echo  "------------------------------------------------------"
 logMsg "Check for config content:"
 if ! [ -d $BUILD_SRCDIR ]; then
@@ -48,9 +51,11 @@ if ! [ -f $DOCKER_FILE ]; then
     printErrorMsg "Couldn't find : $DOCKER_FILE"    
 fi
 
-if [ -z "$3" ]; then
+if ! [ -z "$3" ]; then
    BUILD_IMAGEDIR=$3
+  echo  "test1"
 else
+   echo "tewst2"
    BUILD_IMAGEDIR=$TOP/$TARGET
 fi
 
@@ -69,19 +74,24 @@ if [ -d $BUILD_IMAGEDIR/rulles ]; then
 fi
 
 #copy configs
-cd $BUILD_IMAGEDIR 
-cp $DOCKER_FILE .
-cp -r $RULLES_DIR opt/ecloud/
-
+#cd $BUILD_IMAGEDIR 
+cp $DOCKER_FILE  $BUILD_IMAGEDIR/
+cp -r $RULLES_DIR  $BUILD_IMAGEDIR/opt/ecloud/
+cd $BUILD_IMAGEDIR
+#exit 0
 #build image
-(set -x; docker build -t=$IMG_NAME  --build-arg agent_version=$BUILD_VERSION .)
+if ! (docker build -t=$IMG_NAME  --build-arg  agent_version=$BUILD_VERSION . )  then 
+   printErrorMsg "Image was not created!!!"
+fi
+#docker save $IMG_NAME > $IMG_NAME.tar
+
 
 #(set -x; docker build -t "$BUILD_IMAGE" .) 
 #save image $IMG_NAME to tar
 
-docker save $IMG_NAME > $IMG_NAME.tar
+#docker save $IMG_NAME > $IMG_NAME.tar
 #docker load IMG_NAME.tar
 
-cd "$PWD"
+#cd "$PWD"
 echo 
 echo "Image built successfully: $IMG_NAME"
