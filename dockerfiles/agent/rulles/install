@@ -1,4 +1,61 @@
-#!/bin/bash
+#!/bin/sh
+#Current 'sh' script shoud install  ecagent services 
+#1. copy services in /etc/init.d
+#-----------ecagent-----------
+#copy file to init.d
+EC_ProductVersion=2017.10.11
+cp /opt/ecloud/i686_Linux/64/bin/ecagent.ignore.sh /etc/init.d/ecagent
+#change permissions
+/bin/chmod 755 /etc/init.d/ecagent
+#config files 
+/bin/mkdir /etc/sysconfig
+cp /opt/ecloud/i686_Linux/conf/ecagent.conf /etc/sysconfig/ecagent.conf
+/bin/chmod 0644 /etc/sysconfig/ecagent.conf
+/bin/chown root /etc/sysconfig/ecagent.conf
+#create links
+ln -s /etc/init.d/ecagent /etc/rc0.d/K20ecagent 
+ln -s /etc/init.d/ecagent /etc/rc2.d/S77ecagent 
+ln -s /etc/init.d/ecagent /etc/rc3.d/S77ecagent 
+ln -s /etc/init.d/ecagent /etc/rc5.d/S77ecagent 
+ln -s /etc/init.d/ecagent /etc/rc6.d/K20ecagent
 
-touch /opt/ecloud/hello_i.txt
-echo Hello > /opt/ecloud/hello_i.txt
+#-----------erunner-----------
+#copy file to init.d
+cp /opt/ecloud/i686_Linux/64/bin/erunner /etc/init.d/erunner
+#change permissions
+/bin/chmod 755 /etc/init.d/erunner
+#create links    
+ln -s /etc/init.d/erunner /etc/rc0.d/K20erunner
+ln -s /etc/init.d/erunner /etc/rc2.d/S77erunner
+ln -s /etc/init.d/erunner /etc/rc3.d/S77erunner
+ln -s /etc/init.d/erunner /etc/rc5.d/S77erunner 
+ln -s /etc/init.d/erunner /etc/rc6.d/K20erunner
+
+#Change files permission:
+#f=`find /opt/ecloud/i686_Linux -name \*.jpg -or -name \*.JPG`
+
+chmod -R 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/64/lib/*
+chmod -R 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/64/bin/*
+chmod -R 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/64/bin
+chmod -R 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/bin/*
+
+chmod -R 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/lib/*
+
+chmod 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/bin
+chmod 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/64/lib 
+chmod 755 /opt/ecloud/i686_Linux/$EC_ProductVersion/lib
+chmod 755 /opt/ecloud/i686_Linux/$EC_ProductVersion
+
+chmod -R 755 /opt/ecloud/i686_Linux/bin/*
+chmod 755 /opt/ecloud/i686_Linux/bin
+chmod -R 755  /opt/ecloud/i686_Linux/lib/*
+chmod 755  /opt/ecloud/i686_Linux/lib
+chmod -R 755  /opt/ecloud/i686_Linux/64/bin/*
+chmod 755 /opt/ecloud/i686_Linux/64/bin
+chmod -R 755 /opt/ecloud/i686_Linux/64/lib/*
+chmod 755 /opt/ecloud/i686_Linux/64/lib
+
+chmod -R 755  /opt/ecloud/i686_Linux/unsupported/*
+chmod 755 /opt/ecloud/i686_Linux/unsupported/
+chmod 755 /opt/ecloud/i686_Linux/patches/main.mk/41298/42fa02ee9ddc6cf4535c3141cd279ac8/soong_ui.bash
+chmod 755 /opt/ecloud/i686_Linux/patches/main.mk/41298/42fa02ee9ddc6cf4535c3141cd279ac8/soong_ui.bash.partial
