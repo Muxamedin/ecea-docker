@@ -1,22 +1,87 @@
 #!/bin/sh
 # script for build docker images with electric-cloud accelerator applications
+
 function printErrorMsg() {
     echo "ERROR: $1"
     echo ""
-    echo "Usage: $0 <build-target>"
+    echo "Usage: $0 <build_target> <build_version> <build_imagedir>"
+	echo "1 <build_target>: agent | cm | emake ; #| full"
+	echo "2 <build_version>: in format like 10.0.0.0"
+	echo "3 <build_imagedir>: working build dir"
     exit 1
 }
+
+function logMsg() {
+    echo "<-log->| $1"    
+}
+
 if [ -z "$1" ]; then
     printErrorMsg "no target specified" 
 fi
+
 TARGET=$1
-PWD_OLD=`pwd`
-BUILD_NAME=$PWD_OLD/
+
+if [ -z "$2" ]; then
+   BUILD_VERSION=10.0.0.0
+else 
+   BUILD_VERSION="$2"   
+fi
+
+
+PWD=`pwd`
+TOP="../$PWD"
+BUILD_SRCDIRDIR=$TOP/dokerfiles/$TARGET
+RULLES_DIR=$BUILD_SRCDIR/rulles
+DOCKER_FILE=$BUILD_SRCDIR/Dockerfile
+IMG_NAME="$TARGET_${BUILD_VERSION:0:2}_alpha"
 echo  "------------------------------------------------------"
-echo "check for files  content"
+logMsg "Check for config content:"
+if ! [ -d $BUILD_SRCDIR ]; then
+    printErrorMsg "Couldn't find - BUILD_SRCDIR : $BUILD_SRCDIR"    
+fi
 
+if ! [ -d $RULLES_DIR ]; then
+    printErrorMsg "Couldn't find RULLES_DIR : $RULLES_DIR"    
+fi
 
-(set -x; docker build -t "$BUILD_IMAGE" .) 
-cd "$SAVED_PWD";rm -rf "$BUILD_DIR"
+if ! [ -f $DOCKER_FILE ]; then
+    printErrorMsg "Couldn't find : $DOCKER_FILE"    
+fi
+
+if [ -z "$3" ]; then
+   BUILD_IMAGEDIR=$3
+else
+   BUILD_IMAGEDIR=$TOP/$TARGET
+fi
+
+logMsg "BUILD_IMAGEDIR - $BUILD_IMAGEDIR"
+
+if ! [ -d $BUILD_IMAGEDIR ]; then
+    printErrorMsg "Couldn't find BUILD_IMAGEDIR : $BUILD_IMAGEDIR"    
+fi
+
+if [ -f "$BUILD_IMAGEDIR/Dockerfile" ]; then
+   rm    $BUILD_IMAGEDIR/Dockerfile
+fi
+
+if [ -d $BUILD_IMAGEDIR/rulles ]; then
+   rm -r $BUILD_IMAGEDIR/opt/ecloud/rulles
+fi
+
+#copy configs
+cd $BUILD_IMAGEDIR 
+cp $DOCKER_FILE .
+cp -r $RULLES_DIR opt/ecloud/
+
+#build image
+(set -x; docker build -t=$IMG_NAME  --build-arg agent_version=$BUILD_VERSION .)
+
+#(set -x; docker build -t "$BUILD_IMAGE" .) 
+#save image $IMG_NAME to tar
+
+docker save $IMG_NAME > $IMG_NAME.tar
+#docker load IMG_NAME.tar
+
+cd "$PWD"
 echo 
-echo "Image built successfully: $BUILD_IMAGE"
+echo "Image built successfully: $IMG_NAME"
