@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#/etc/init.d/ecconfig 
+/etc/init.d/erunner start
+/etc/init.d/ecagent start
