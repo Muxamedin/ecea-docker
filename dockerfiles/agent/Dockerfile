@@ -29,9 +29,9 @@ ENV BUILD_VERSION=${agent_version}
 COPY  opt  /opt
 #chmod +x /opt/ecloud/rulles/install && \
 RUN /opt/ecloud/rulles/install && \
-rm  -f /opt/ecloud/rulles/install
+rm  -f /opt/ecloud/rulles/install ; chmod  755  /opt/ecloud/rulles/auto
 #----------------------------------------------------
 # supervisor script
 # ---------------------------------------------------
-CMD ["/opt/ecloud/rulles/auto]
+CMD ["/opt/ecloud/rulles/auto"]
 # ---------------------------------------------------

@@ -2,4 +2,30 @@
 
 #/etc/init.d/ecconfig 
 /etc/init.d/erunner start
-/etc/init.d/ecagent start
+/etc/init.d/ecagent starti
+if [ -z "$ECA_RESOURCE_NAME" ]; then
+    echo "Variable ECA_RESOURCE_NAME is not defined, using host name (${HOSTNAME}) as the name for resource."
+    export ECA_RESOURCE_NAME="$HOSTNAME"
+fi
+echo "Starting ElectricAccelerator Agent '$ECA_RESOURCE_NAME'..."
+
+# Start the second process
+echo "<--Log--$0> | Going to run /etc/init.d/erunner"
+/etc/init.d/erunner  start
+status=$?
+echo "<--Log--$0> | Status erunner - $status"
+if [ $status -ne 0 ]; then
+  echo "<--Log--$0> Failed to start /etc/init.d/erunner: $status"
+  exit $status
+fi
+
+
+# Start the third process
+echo "<--Log--$0> | Going to run /etc/init.d/ecagent"
+/etc/init.d/ecagent  start
+status=$?
+echo "<--Log--$0> | Status ecagent - $status"
+if [ $status -ne 0 ]; then
+  echo "<--Log--$0> Failed to start /etc/init.d/ecagent: $status"
+fi
+tail -f /opt/ecloud/i686_Linux/APL.txt
