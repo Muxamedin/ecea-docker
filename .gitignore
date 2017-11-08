@@ -1,3 +1,6 @@
 #gitignore
 agent/
+emake/
+cm/
 *.swp
+*.sw*
