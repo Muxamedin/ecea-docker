@@ -29,9 +29,9 @@ drwxr-xr-x 8 build build 4096 Nov  8 09:12 .git/
    ./build <name of component> <build version> <path to folder with install content files>
 ```
    
-## Example
+## Command
 ```bash
-build agent "10.0.0.0" ../agent
+./build agent "10.0.0.0" ../agent
 ```
 As a result should be created :
 
@@ -40,7 +40,7 @@ Image with "<name of component>_<build version>_alpha"
 ## Example
 
 ```
-  agent_10.0.0.0_alpha
+  "agent_10.0.0.0_alpha"
 ```
 
 To run agent container we need to use option as 
@@ -48,7 +48,7 @@ To run agent container we need to use option as
 --privileged=true --device /dev/efs --net=host
 ```
 
-## Example
+## Command
 
 ```bash
 docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97  --device /dev/efs --net=host --name=c7 agent_2017.10.11_alpha
