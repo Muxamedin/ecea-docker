@@ -1,20 +1,21 @@
 # EC Accelerator
-Docker containers with electric accelerator components
-electric accelerator components:
-  -EMake
-  -Agent 
-  -ClusterManager 
-To create Image with one of component inside :
+Docker containers with Electric-Accelerator components
+  *EMake*  *Agent* and *ClusterManager*
+  
+To create an image with one of component:
 
-1. Clone current repository
-2. Copy component content files in top folder with cloned files:
-see how it looks like for agent component:
+1. Clone the current repository
+2. Copy the folder with files from the ../*/agent directory to ecea-docker/:
 
-## looks like 
+```bash
+cp ../*/agent ecea-docker/
+```
+
+## As a result should be like here :
 
 ```bash
 ll ecea-docker/
-drwxrwxr-x 3 build build 4096 Nov  7 19:57 agent/      <- folder with content install content
+drwxrwxr-x 3 build build 4096 Nov  7 19:57 agent/      <- just copyed folder
 drwxrwxr-x 2 build build 4096 Nov  7 18:03 build/
 drwxr-xr-x 5 build build 4096 Nov  2 17:29 dockerfiles/
 drwxr-xr-x 8 build build 4096 Nov  8 09:12 .git/
@@ -24,7 +25,7 @@ drwxr-xr-x 8 build build 4096 Nov  8 09:12 .git/
 
 3. Go to build folder & run command as 
 
-## Example
+## pattern
 ```
    ./build <name of component> <build version> <path to folder with install content files>
 ```
@@ -51,7 +52,7 @@ To run agent container we need to use option as
 ## Command
 
 ```bash
-docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97  --device /dev/efs --net=host --name=c7 agent_2017.10.11_alpha
+docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8  --device /dev/efs --net=host --name=ea_agents agent_2017.10.11_alpha
 ```
 
 By default agent will be pointed on CM which placed on localhost 
@@ -70,3 +71,31 @@ or
 ```
 -e CMHOST=10.200.1.97:8030
 ```
+To choose number of agents you can add option AGENT_NUMBER 
+
+```
+-e AGENT_NUMBER=digit_number_agents
+```
+
+## Work with container :
+
+```bash
+docker top  ea_agents
+```
+```bash
+docker logs  ea_agents
+```
+
+```bash
+docker exec  ea_agents /opt/ecloud/i686_Linux/64/bin/emake -v
+```
+```bash
+docker exec  ea_agents /opt/ecloud/i686_Linux/64/bin/emake -f /tmp/Makefile
+```
+
+```bash
+#interactive commandline
+docker exec -it ea_agents bash
+```
+
+
