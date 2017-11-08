@@ -1,12 +1,10 @@
 #!/bin/bash
 
 CMHOST_CONF=localhost
-INSTALL_ERUNNERD_CONF=y
-LOG_REMOVE_CONF=No
+CMPORT_CONF=8030
 LSF_HOST_CONF=n
 MAX_OPEN_FDS_CONF=
 AGENT_NUMBER_CONF=2
-REBOOT_CONF=No
 SECURE_CONSOLE_CONF=n
 SHARED_AGENT_NUMBER_CONF=2
 TEMPDIR_CONF=/tmp
@@ -28,10 +26,10 @@ TEMPDIR_CONF=${TEMPDIR:=$TEMPDIR_CONF}
  -cm $CMHOST_CONF \
  -numagents $AGENT_NUMBER_CONF \
  -lsfhost $LSF_HOST_CONF \
- -secureconsole value \
+ -secureconsole $SECURE_CONSOLE_CONF \
  -sharedagents $SHARED_AGENT_NUMBER_CONF \
  -tempdir "$TEMPDIR_CONF" \
- -maxopenfds value 
+ -maxopenfds $MAX_OPEN_FDS_CONF
   
 
 if [ -z "$ECA_RESOURCE_NAME" ]; then
