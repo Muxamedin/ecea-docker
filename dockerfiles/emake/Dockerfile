@@ -17,9 +17,8 @@ FROM ubuntu:16.04
 # install section
 # ---------------------------------------------------
 COPY  opt  /opt
-RUN chmod +x /opt/ecloud/install && \
-/opt/ecloud/install && \
- rm  -f /opt/ecloud/install
+RUN /opt/ecloud/rulles/install && \
+ rm  -f /opt/ecloud/rulles/install
 # --------------------------------------------------- 
 
 # ---------------------------------------------------
@@ -30,5 +29,5 @@ RUN chmod +x /opt/ecloud/install && \
 # ---------------------------------------------------
 # supervisor script
 # ---------------------------------------------------
-CMD ["/opt/ecloud/supervisor"]
+CMD ["/opt/ecloud/rulles/auto"]
 # ---------------------------------------------------

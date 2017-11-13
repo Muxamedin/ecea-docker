@@ -2,7 +2,7 @@
 # ---------------------------------------------------
 FROM ubuntu:16.04
 # ---------------------------------------------------
-
+RUN apt-get update && apt-get install -y gcc
 # ---------------------------------------------------
 # options
 # ---------------------------------------------------
@@ -13,7 +13,6 @@ FROM ubuntu:16.04
 #ARG lsf_host
 #ARG secure_console
 #ARG tempdir
-#"2017.10.11"
 ARG agent_version
 # ---------------------------------------------------
 
@@ -28,8 +27,8 @@ ENV BUILD_VERSION=${agent_version}
 # ---------------------------------------------------
 COPY  opt  /opt
 #chmod +x /opt/ecloud/rulles/install && \
-RUN /opt/ecloud/rulles/install && \
-rm  -f /opt/ecloud/rulles/install ; chmod  755  /opt/ecloud/rulles/auto
+RUN /opt/ecloud/rulles/install 
+#RUN rm  -f /opt/ecloud/rulles/install ; chmod  755  /opt/ecloud/rulles/auto
 #----------------------------------------------------
 # supervisor script
 # ---------------------------------------------------
