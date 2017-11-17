@@ -7,7 +7,7 @@ if [ -z "$ECA_RESOURCE_NAME" ]; then
 fi
 echo "Starting ElectricAccelerator CM '$ECA_RESOURCE_NAME'..."
 (tail -n 4 -f /opt/ecloud/i686_Linux/logs/accelerator.log) &
-echo "<--Log--$0> | Going to run /etc/init.d/clustermanager"
+echo "<--Log--$0> | /opt/ecloud/i686_Linux/64/bin/clustermanager"
 (/opt/ecloud/i686_Linux/64/bin/clustermanager  start ) &
 (tail -n 4 -f /var/log/cmlog) &
 bash
