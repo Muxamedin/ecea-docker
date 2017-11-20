@@ -1,7 +1,4 @@
 #gitignore
-agent/
 agent10/
-emake/
-cm/
 *.swp
 *.sw*
