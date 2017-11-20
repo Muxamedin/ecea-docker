@@ -33,8 +33,10 @@ usage() {
     echo "Usage: $0 -t=<build_target> -c=<content_folder> [-v=<build_version>]"
     echo "1 <build_target>: agent | cm | emake"
     echo "2 <build_version>: in format like 10.0"
-    echo "3 <content_folder>: folder with content files for for acceletor-target docker image"
+    echo "3 <content_folder>: folder to look for files with content for acceletor-target docker image."
+    echo "By default Dockerfile script will try to copy content from /opt  on current host to the image."
 }
+
 printErrorMsg() {
     echo "ERROR: $1"
     echo ""
