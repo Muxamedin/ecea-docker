@@ -1,36 +1,21 @@
 # choose system
 # ---------------------------------------------------
 FROM ubuntu:16.04
+#1st layer 
 # ---------------------------------------------------
 RUN apt-get update && apt-get install -y gcc
 # ---------------------------------------------------
-# options
+# 2d layer
 # ---------------------------------------------------
-#ARG build_vesrion
-#ARG agent_version
-#ARG cmhost
-#ARG cmport
-#ARG lsf_host
-#ARG secure_console
-#ARG tempdir
-ARG agent_version
+COPY  /opt/ecloud  /opt
+# 3d layer
 # ---------------------------------------------------
-
+COPY  rules  /opt/ecloud
+# 4d layer
 # ---------------------------------------------------
-# environment section
-# ---------------------------------------------------
-ENV BUILD_VERSION=${agent_version}
-# ---------------------------------------------------
-
-# ---------------------------------------------------
-# install section
-# ---------------------------------------------------
-COPY  opt  /opt
-#chmod +x /opt/ecloud/rulles/install && \
-RUN /opt/ecloud/rulles/install 
-#RUN rm  -f /opt/ecloud/rulles/install ; chmod  755  /opt/ecloud/rulles/auto
+RUN /opt/ecloud/rules/install 
 #----------------------------------------------------
 # supervisor script
 # ---------------------------------------------------
-CMD ["/opt/ecloud/rulles/auto"]
+CMD ["/opt/ecloud/rules/auto"]
 # ---------------------------------------------------

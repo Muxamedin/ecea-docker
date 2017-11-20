@@ -1,2 +1,0 @@
-#!/bin/bash
-tail -f /opt/ecloud/i686_Linux/APL.txt

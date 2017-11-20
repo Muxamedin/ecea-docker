@@ -11,7 +11,7 @@ printErrorMsg() {
     echo ""
     echo "Usage: $0 <build_target> <build_version> <build_imagedir>"
     echo "1 <build_target>: agent | cm | emake ; #| full"
-    echo "2 <build_version>: in format like 10.0.0.0"
+    echo "2 <build_version>: in format like 10.0.0"
     echo "3 <build_imagedir>: working build dir"
     exit 1
 }
@@ -37,7 +37,7 @@ PWD=`pwd`
 TOP=".."
 
 BUILD_SRCDIR=$TOP/dockerfiles/$TARGET
-RULLES_DIR=$BUILD_SRCDIR/rulles
+RULES_DIR=$BUILD_SRCDIR/rules
 DOCKER_FILE=$BUILD_SRCDIR/Dockerfile
 
 IMG_NAME="${TARGET}_${BUILD_VERSION}_alpha"
@@ -47,8 +47,8 @@ if ! [ -d $BUILD_SRCDIR ]; then
     printErrorMsg "Couldn't find - BUILD_SRCDIR : $BUILD_SRCDIR"    
 fi
 
-if ! [ -d $RULLES_DIR ]; then
-    printErrorMsg "Couldn't find RULLES_DIR : $RULLES_DIR"    
+if ! [ -d $RULES_DIR ]; then
+    printErrorMsg "Couldn't find RULES_DIR : $RULES_DIR"    
 fi
 
 if ! [ -f $DOCKER_FILE ]; then
@@ -71,19 +71,19 @@ if [ -f "$BUILD_IMAGEDIR/Dockerfile" ]; then
    rm    $BUILD_IMAGEDIR/Dockerfile
 fi
 
-if [ -d $BUILD_IMAGEDIR/rulles ]; then
-   rm -r $BUILD_IMAGEDIR/opt/ecloud/rulles
+if [ -d $BUILD_IMAGEDIR/rules ]; then
+   rm -r $BUILD_IMAGEDIR/opt/ecloud/rules
 fi
 
 #copy configs
 #cd $BUILD_IMAGEDIR 
 cp $DOCKER_FILE  $BUILD_IMAGEDIR/
-cp -r $RULLES_DIR  $BUILD_IMAGEDIR/opt/ecloud/
+cp -r $RULES_DIR  $BUILD_IMAGEDIR/opt/ecloud/
 cd $BUILD_IMAGEDIR
-chmod 755  $BUILD_IMAGEDIR/opt/ecloud/rulles/*
+chmod 755  $BUILD_IMAGEDIR/opt/ecloud/rules/*
 #exit 0
 #build image
-if ! (docker build -t=$IMG_NAME  --build-arg  agent_version=$BUILD_VERSION . )  then 
+if ! (docker build -t=$IMG_NAME  . )  then 
    printErrorMsg "Image was not created!!!"
 fi
 #docker save $IMG_NAME > $IMG_NAME.tar
