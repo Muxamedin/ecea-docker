@@ -1,0 +1,7 @@
+#!/bin/bash
+mkdir /etc/sysconfig
+cp /opt/ecloud/i686_Linux/conf/ecagent.conf /etc/sysconfig/ecagent.conf
+chmod 0644 /etc/sysconfig/ecagent.conf
+chmod +x /opt/ecloud/rules/ecagent
+chmod +x /opt/ecloud/rules/erunner
+

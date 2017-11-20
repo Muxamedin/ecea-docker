@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Starting ElectricAccelerator CM ..."
+echo "<--Log--$0> | /opt/ecloud/i686_Linux/64/bin/clustermanager"
+(tail -n 4 -f /opt/ecloud/i686_Linux/logs/accelerator.log) &
+(/opt/ecloud/i686_Linux/64/bin/clustermanager start) &
+(tail -n 4 -f /var/log/cmlog) &
+bash
