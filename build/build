@@ -2,6 +2,7 @@
 # script for build docker images with electric-cloud accelerator applications
 
 #list args passed in commandline
+echo  "----------------------preparing----------------------------"
 for arg in "$@"; do
     echo "parameter: '$arg'"
 done
@@ -9,10 +10,9 @@ done
 printErrorMsg() {
     echo "ERROR: $1"
     echo ""
-    echo "Usage: $0 <build_target> <build_version> <build_imagedir>"
+    echo "Usage: $0 <build_target>  <content_dir>"
     echo "1 <build_target>: agent | cm | emake ; #| full"
-    echo "2 <build_version>: in format like 10.0.0"
-    echo "3 <build_imagedir>: working build dir"
+    echo "2 <content_dir>: working build dir"
     exit 1
 }
 
@@ -26,11 +26,7 @@ fi
 
 TARGET=$1
 
-if [ -z "$2" ]; then
-   BUILD_VERSION=10.0.0
-else 
-   BUILD_VERSION="$2"   
-fi
+BUILD_VERSION=10.0
 
 
 PWD=`pwd`
@@ -41,7 +37,7 @@ RULES_DIR=$BUILD_SRCDIR/rules
 DOCKER_FILE=$BUILD_SRCDIR/Dockerfile
 
 IMG_NAME="${TARGET}_${BUILD_VERSION}_alpha"
-echo  "------------------------------------------------------"
+echo  "<--------------------------------------------------------->"
 logMsg "Check for config content:"
 if ! [ -d $BUILD_SRCDIR ]; then
     printErrorMsg "Couldn't find - BUILD_SRCDIR : $BUILD_SRCDIR"    
@@ -55,13 +51,13 @@ if ! [ -f $DOCKER_FILE ]; then
     printErrorMsg "Couldn't find : $DOCKER_FILE"    
 fi
 
-if ! [ -z "$3" ]; then
-   BUILD_IMAGEDIR=$3
+if ! [ -z "$2" ]; then
+   BUILD_IMAGEDIR=$2
 else
-   BUILD_IMAGEDIR=$TOP/$TARGET
+   BUILD_IMAGEDIR=$TOP/imgcontent/$TARGET
 fi
 
-#logMsg "BUILD_IMAGEDIR - $BUILD_IMAGEDIR"
+logMsg "BUILD_IMAGEDIR - $BUILD_IMAGEDIR"
 
 if ! [ -d $BUILD_IMAGEDIR ]; then
     printErrorMsg "Couldn't find BUILD_IMAGEDIR : $BUILD_IMAGEDIR"    
@@ -77,12 +73,14 @@ fi
 
 #copy configs
 #cd $BUILD_IMAGEDIR 
+echo  "--------------------work with files------------------------"
 cp $DOCKER_FILE  $BUILD_IMAGEDIR/
 cp -r $RULES_DIR  $BUILD_IMAGEDIR/opt/ecloud/
 cd $BUILD_IMAGEDIR
-chmod 755  $BUILD_IMAGEDIR/opt/ecloud/rules/*
+chmod 755  $BUILD_IMAGEDIR/opt/ecloud/rules/
 #exit 0
 #build image
+echo  "---------------------run image build-----------------------"
 if ! (docker build -t=$IMG_NAME  . )  then 
    printErrorMsg "Image was not created!!!"
 fi

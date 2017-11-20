@@ -1,6 +1,29 @@
 Semple of commands:
 
-build agent "10.0.0.0" ../agent
-build cm "10.0.0.0"    ../cm
-build emake "10.0.0.0" ../emake
-#build full "10.0.0.0" ../full
+./build agent "10.0.0"  /path/to/folder/with/content 
+./build cm    "10.0.0"  /path/to/folder/with/content 
+./build emake "10.0.0"   /path/to/folder/with/content 
+
+#--------------------------------------------------
+
+./build.sh \
+-c=/opt \
+-t=agent \
+-s=rh
+
+
+
+./build.sh
+-c=/opt \
+-t=agent \
+-s=ubuntu
+
+./build.sh \
+ -c=/opt \
+ -t=agent \
+ -s=centos
+
+./build.sh
+-c=/opt \
+-t=cm \
+-s=centos 
