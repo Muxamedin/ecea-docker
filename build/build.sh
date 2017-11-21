@@ -95,12 +95,12 @@ if  [ -d $DOCKER_FILE ]; then
     printErrorMsg "There is no $DOCKER_FILE!"
 fi
 
-rm  $CONTENT_FOLDER/Dockerfile
-rm  -r $CONTENT_FOLDER/opt/ecloud/rules
+#rm  $CONTENT_FOLDER/Dockerfile
+#rm  -r $CONTENT_FOLDER/opt/ecloud/rules
 
-cp $DOCKER_FILE $CONTENT_FOLDER/
+#cp $DOCKER_FILE $CONTENT_FOLDER/
 
-cp -r $RULES_DIR $CONTENT_FOLDER/opt/ecloud/
+#cp -r $RULES_DIR $CONTENT_FOLDER/opt/ecloud/
 cd  $DOCKER_FILE_FOLDER
 
 BUILD_VERSION_DEF=10.0 
