@@ -1,12 +1,12 @@
 # choose system ---------------------------------------------------
-#FROM  centos 
+FROM  centos 
 #FROM chanchal/rhel72
-FROM  darksolar/rhel6.6-gcc4.9	
+#FROM  darksolar/rhel6.6-gcc4.9	
 
-#0
-#RUN yum -y update; yum clean all
-#RUN yum -y install epel-release; yum clean all
-#RUN yum install -y gcc;  yum clean all
+#0st layer
+RUN yum -y update; yum clean all
+RUN yum -y install epel-release; yum clean all
+RUN yum install -y gcc;  yum clean all
 #1st layer
 # ---------------------------------------------------
 ADD ecloud.tar.gz /

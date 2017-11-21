@@ -1,20 +1,21 @@
-# choose system ---------------------------------------------------
-#FROM  centos 
-#FROM chanchal/rhel72
-FROM  darksolar/rhel6.6-gcc4.9	
-
-#0
-#RUN yum -y update; yum clean all
-#RUN yum -y install epel-release; yum clean all
-#RUN yum install -y gcc;  yum clean all
-#1st layer
+# choose system
 # ---------------------------------------------------
+FROM ubuntu:16.04
+#1st layer 
+# ---------------------------------------------------
+RUN apt-get update && apt-get install -y gcc
+# ---------------------------------------------------
+# 2d layer
+# ---------------------------------------------------
+#COPY  /opt/ecloud  /opt
 ADD ecloud.tar.gz /
+# 3d layer
 # 3d layer -----------------------------------------
 COPY rules /opt/ecloud/rules
 # 4d layer -----------------------------------------
 RUN /opt/ecloud/rules/install
 #----------------------------------------------------
-# supervisor script --------------------------------
+# supervisor script
+# ---------------------------------------------------
 CMD ["/opt/ecloud/rules/auto"]
 # ---------------------------------------------------

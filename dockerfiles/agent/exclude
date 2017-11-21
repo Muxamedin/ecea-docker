@@ -1,4 +1,3 @@
-/opt/ecloud/
 /opt/ecloud/install.props
 /opt/ecloud/i686_Linux/64/bin/EIInstaller
 /opt/ecloud/i686_Linux/64/bin/install_efs
@@ -182,7 +181,6 @@
 /opt/ecloud/i686_Linux/32/lib/tk8.6/demos/images/pattern.xbm
 /opt/ecloud/i686_Linux/32/lib/tk8.6/demos/images/tcllogo.gif
 /opt/ecloud/i686_Linux/32/lib/tk8.6/demos/images/teapot.ppm
-/opt/ecloud/i686_Linux/cust_src/
 /opt/ecloud/i686_Linux/cust_src/unix/
 /opt/ecloud/i686_Linux/cust_src/unix/agent-unix.c
 /opt/ecloud/i686_Linux/cust_src/unix/agent-unix.h
@@ -244,7 +242,6 @@
 /opt/ecloud/i686_Linux/cust_src/.efs100.ko.cmd
 /opt/ecloud/i686_Linux/cust_src/ecagent.state
 /opt/ecloud/i686_Linux/cust_src/agent0
-/opt/ecloud/i686_Linux/lofs/*
 /opt/ecloud/i686_Linux/lofs/COPYING
 /opt/ecloud/i686_Linux/lofs/dentry.c
 /opt/ecloud/i686_Linux/lofs/file.c
@@ -289,9 +286,9 @@
 /opt/ecloud/i686_Linux/lofs/lofs.ko
 /opt/ecloud/i686_Linux/lofs/.lofs.ko.cmd
 /opt/ecloud/i686_Linux/einsight.ico
+/opt/ecloud/i686_Linux/cust_src
+/opt/ecloud/i686_Linux/lofs
 /opt/ecloud/i686_Linux/logs/
-/opt/ecloud/i686_Linux/conf/
 /opt/ecloud/i686_Linux/conf/base.conf
-/opt/ecloud/i686_Linux/conf/ecagent.conf
 /opt/ecloud/uninstall*
 /opt/ecloud/*log

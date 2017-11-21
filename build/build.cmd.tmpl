@@ -1,29 +1,32 @@
 Semple of commands:
 
-./build agent "10.0.0"  /path/to/folder/with/content 
-./build cm    "10.0.0"  /path/to/folder/with/content 
-./build emake "10.0.0"   /path/to/folder/with/content 
-
-#--------------------------------------------------
 
 ./build.sh \
--c=/opt \
+-c=/tmp/build \
 -t=agent \
 -s=rh
 
 
 
 ./build.sh
--c=/opt \
+-c=/tmp/build \
 -t=agent \
 -s=ubuntu
 
 ./build.sh \
- -c=/opt \
+ -c=/tmp/build \
  -t=agent \
  -s=centos
 
 ./build.sh
--c=/opt \
+-c=/tmp/build \
 -t=cm \
 -s=centos 
+
+#--------------------------------------------------
+./build agent "10.0.0"  /path/to/folder/with/content 
+./build cm    "10.0.0"  /path/to/folder/with/content 
+./build emake "10.0.0"   /path/to/folder/with/content 
+
+#--------------------------------------------------
+

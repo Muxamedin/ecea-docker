@@ -1,47 +1,43 @@
+
 # EC Accelerator
 Docker containers with Electric-Accelerator components
   *EMake*  *Agent* and *ClusterManager*
   
 To create an image with one of component:
 
-1. Clone the current repository
-2. Copy the folder with files from the ../*/agent directory to ecea-docker/:
+1. Run v10 agent install on machine where docker image is to be prepared
+2. Run build.sh script to prepare /opt for docker image and build your image 
 
-```bash
-cp ../*/agent ecea-docker/
-```
-
-## As a result should be like here :
-
-```bash
-ll ecea-docker/
-drwxrwxr-x 3 build build 4096 Nov  7 19:57 agent/      <- just copyed folder
-drwxrwxr-x 2 build build 4096 Nov  7 18:03 build/
-drwxr-xr-x 5 build build 4096 Nov  2 17:29 dockerfiles/
-drwxr-xr-x 8 build build 4096 Nov  8 09:12 .git/
--rw-rw-r-- 1 build build   24 Nov  6 21:20 .gitignore
--rw-r--r-- 1 build build   69 Nov  2 17:29 README.md
-```
-
-3. Go to build folder & run command as 
-
-## pattern
-```
-   ./build <name of component> <build version> <path to folder with install content files>
-```
-   
 ## Command
 ```bash
-./build agent "10.0.0.0" ../agent
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=rh
+```
+
+
+
+##USAGE
+```
+   "Usage: $0 -t=<build_target> -c=<content_folder> -s=<platform name> [-v=<build_version>]"
+    "1 <build_target>:   agent | cm | emake"
+    "2 <build_version>:  in format like 10.0 - optional"
+    "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
+    "4 <platform name>:  rh | centos | ubuntu" 
+
+             -c=*|--contetnt_folder
+             -t=*|--target
+             -s=*|--system
+             -v=*|--vesrsion
+             -h  |--help
 ```
 As a result should be created :
 
-Image with "<name of component>_<build version>_alpha"
+Image with "<name of component>_<build version>_<>alpha"
 
 ## Example
 
 ```
-  "agent_10.0.0.0_alpha"
+  "agent_10.0_rh_alpha"
 ```
 
 To run agent container we need to use option as 
@@ -52,7 +48,7 @@ To run agent container we need to use option as
 ## Command
 
 ```bash
-docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8  --device /dev/efs --net=host --name=ea_agents agent_2017.10.11_alpha
+docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8  --device /dev/efs --net=host --name=ec_agent  agent_10.0_rh_alpha
 ```
 
 By default agent will be pointed on CM which placed on localhost 
