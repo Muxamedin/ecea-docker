@@ -40,7 +40,17 @@ Image with "<name of component>_<build version>_<>alpha"
   "agent_10.0_rh_alpha"
 ```
 
+Before run container - on machine with docker should be downloaded and installed efs driver [link]
+
+3  Install: 
+``` 
+  ElectricAcceleratorFileSystem --mode console
+```
+
+
+
 To run agent container we need to use option as 
+
 ```
 --privileged=true --device /dev/efs --net=host
 ```
