@@ -1,12 +1,16 @@
 
 # EC Accelerator
 Docker containers with Electric-Accelerator components
+  
+  
   *EMake*  *Agent* and *ClusterManager*
   
 To create an image with Agent:
 
 Step 1. Install ECFS installer on host machine
+
 Step 2. Run agent install on machine where docker image needs to be prepared
+
 Step 3. Use build.sh to prepare /opt and output a docker image
 
 ## COMMAND1
