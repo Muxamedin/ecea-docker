@@ -24,11 +24,11 @@ To create an image with one of component:
     "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
     "4 <platform name>:  rh | centos | ubuntu" 
 
-             -c=*|--contetnt_folder
-             -t=*|--target
-             -s=*|--system
-             -v=*|--vesrsion
-             -h  |--help
+             -c=*|--contetnt_folder=*
+             -t=*|--target=*
+             -s=*|--system=*
+             -v=*|--vesrsion=*
+             -h  |--help=*
 ```
 As a result should be created :
 

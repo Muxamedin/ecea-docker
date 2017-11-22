@@ -1,5 +1,6 @@
 # EC Accelerator
 Docker containers with Electric-Accelerator components
+
    *Agent*
   
 To create an image with Agent:
@@ -7,19 +8,19 @@ To create an image with Agent:
 1. Run v10 agent install on machine where docker image is to be prepared
 2. Run build.sh script to prepare /opt for docker image and build your image 
 
-## Command1
+## COMMAND1
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
-## Command2
+## COMMAND2
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=ubuntu
 ```
 
-## Command3
+## COMMAND3
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=centos
@@ -35,10 +36,10 @@ To create an image with Agent:
     "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
     "4 <platform name>:  rh | centos | ubuntu" 
 
-             -c=*|--contetnt_folder
-             -t=*|--target
-             -s=*|--system
-             -v=*|--vesrsion
-             -h  |--help
+             -c=*|--contetnt_folder=*
+             -t=*|--target=*
+             -s=*|--system=*
+             -v=*|--vesrsion=*
+             -h  |--help=*
 ```
 
