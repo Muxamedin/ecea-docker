@@ -3,25 +3,25 @@ Docker containers with Electric-Accelerator components
 
    *Agent*
   
-To create an image with Agent:
+To create an image with Agents:
 
-Step 1. Install ECFS installer on host machine
+Step 1. Run the ECFS installer on the host machine
 Step 2. Run agent install on machine where docker image needs to be prepared
 Step 3. Use build.sh to prepare /opt and output a docker image
 
-## COMMAND1
+## COMMAND1 to build RedHat image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
-## COMMAND2
+## COMMAND2 to build ubuntu image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=ubuntu
 ```
 
-## COMMAND3
+## COMMAND3 to build centos image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=centos
