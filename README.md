@@ -1,35 +1,36 @@
 
 # EC Accelerator
 Docker containers with Electric-Accelerator components
-  
-  
+
+
   *EMake*  *Agent* and *ClusterManager*
   
-To create an image with Agent:
+To create an image with Agents:
 
-Step 1. Install ECFS installer on host machine
-
+Step 1. Run the ECFS installer on the host machine
+to
 Step 2. Run agent install on machine where docker image needs to be prepared
 
 Step 3. Use build.sh to prepare /opt and output a docker image
 
-## COMMAND1
+## COMMAND1 to build RedHat image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
-## COMMAND2
+## COMMAND2 to build ubuntu image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=ubuntu
 ```
 
-## COMMAND3
+## COMMAND3 to build centos image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=centos
 ```
+
 
 ##USAGE
 ```
@@ -41,6 +42,38 @@ Step 3. Use build.sh to prepare /opt and output a docker image
     "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
     "6 -r  | --help  - print help" 
 ```
+
+Every build of image with agent will be created  <content_folder>/agent/ecloud.tar.gz archive
+To have ability reuse ecloud.tar.gz on a another machines for building image  (no need to install again agents on a machine)
+user can use option -r 
+
+
+To use  -r option:
+
+- Please create <content_folder>  folder on your new machine - it could be something like /tmp/test
+
+- Create folder  /tmp/test/agent
+
+- Copy ecloud.tar.gz from your build machine to the  /tmp/test/agent
+
+- Run build (see  COMMAND4)
+
+## COMMAND4 to rebuild RedHat image from existed ecloud.tar.gz file 
+```bash 
+   CONTENT_FOLDER=/tmp/test
+   mkdir -r $CONTENT_FOLDER/agent
+
+ 
+cp ../from/ecloud.tar.gz  to $CONTENT_FOLDER/agent 
+   
+cd ecea-docker/build && \
+  ./build.sh -t=agent \
+   -c=$CONTENT_FOLDER \
+   -s=rh \
+   -r 
+```
+
+
 Step 4. Start up Docker image with the following commands:
 
 ## Command
