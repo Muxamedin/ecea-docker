@@ -1,5 +1,44 @@
-Run v10 agent install on machine where docker image is to be prepared
-Run script to prepare /opt (replace this step with actual script name)
-Run the following command where BASE_DIR refers to the directory where /opt is installed from step 2
-./build agent "10.0.0.0" ../BASEDIR 
+# EC Accelerator
+Docker containers with Electric-Accelerator components
+   *Agent*
+  
+To create an image with Agent:
+
+1. Run v10 agent install on machine where docker image is to be prepared
+2. Run build.sh script to prepare /opt for docker image and build your image 
+
+## Command1
+```bash
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=rh
+```
+
+## Command2
+```bash
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=ubuntu
+```
+
+## Command3
+```bash
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=centos
+```
+
+
+
+##USAGE
+```
+   "Usage: $0 -t=<build_target> -c=<content_folder> -s=<platform name> [-v=<build_version>]"
+    "1 <build_target>:   agent | cm | emake"
+    "2 <build_version>:  in format like 10.0 - optional"
+    "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
+    "4 <platform name>:  rh | centos | ubuntu" 
+
+             -c=*|--contetnt_folder
+             -t=*|--target
+             -s=*|--system
+             -v=*|--vesrsion
+             -h  |--help
+```
 

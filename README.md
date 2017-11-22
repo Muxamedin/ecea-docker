@@ -5,7 +5,7 @@ Docker containers with Electric-Accelerator components
   
 To create an image with one of component:
 
-1. Run v10 agent install on machine where docker image is to be prepared
+1. Run v10 accelerator and  install on machine where docker image is to be prepared
 2. Run build.sh script to prepare /opt for docker image and build your image 
 
 ## Command
@@ -32,7 +32,7 @@ To create an image with one of component:
 ```
 As a result should be created :
 
-Image with "<name of component>_<build version>_<>alpha"
+Image with "<nameofcomponent>_<build version>_<alpha>"
 
 ## Example
 
