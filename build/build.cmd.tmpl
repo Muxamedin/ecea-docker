@@ -1,5 +1,6 @@
 Semple of commands:
 
+build rh agent  mage
 
 ./build.sh \
 -c=/tmp/build \
@@ -7,26 +8,32 @@ Semple of commands:
 -s=rh
 
 
-
+build ubuntu agent  image
+  
 ./build.sh
 -c=/tmp/build \
 -t=agent \
 -s=ubuntu
+
+build centos agent image
 
 ./build.sh \
  -c=/tmp/build \
  -t=agent \
  -s=centos
 
-./build.sh
--c=/tmp/build \
--t=cm \
--s=centos 
+ rebuild agent image
+without copyying files from  opt (if  /tmp/build/agent/ecloud.tar.gz already exists )
+./build.sh \
+ -c=/tmp/build \
+ -t=agent \
+ -s=centos \
+-r 
 
 #--------------------------------------------------
-./build agent "10.0.0"  /path/to/folder/with/content 
-./build cm    "10.0.0"  /path/to/folder/with/content 
-./build emake "10.0.0"   /path/to/folder/with/content 
+./old_build agent "10.0.0"  /path/to/folder/with/content 
+./old_build cm    "10.0.0"  /path/to/folder/with/content 
+./old_build emake "10.0.0"   /path/to/folder/with/content 
 
 #--------------------------------------------------
 
