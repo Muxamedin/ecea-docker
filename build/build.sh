@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#handling options
 for i in "$@" 
 do
         case $i in
@@ -15,12 +15,16 @@ do
              SYSTEM_NAME="${i#*=}"
              shift # past argument=value
              ;;
-			 -v=*|--vesrsion=*)
+             -v=*|--vesrsion=*)
              BUILD_VERSION="${i#*=}"
              shift # past argument=value
              ;;
              -h|--help)
              HELP=YES
+             shift # past argument with no value
+             ;;
+             -r|--reuse)
+             REUSE=1
              shift # past argument with no value
              ;;
              *)
@@ -30,7 +34,7 @@ do
 done
 
 
-
+#functions
 workingdir() {
     if ! [ -d $CONTENT_FOLDER ]; then
        mkdir $CONTENT_FOLDER > /dev/null
@@ -43,12 +47,16 @@ workingdir() {
 
 
 usage() {
-    echo "Usage: $0 -t=<build_target> -c=<content_folder> -s=<platform name> [-v=<build_version>]"
-    echo "1 <build_target>: agent | cm | emake"
-    echo "2 <build_version>: in format like 10.0"
-    echo "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
-    echo "4 <platform name>:  rh | centos | ubuntu" 
-    
+    echo
+    echo "Usage: $0 -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>] [-r ]"
+    echo
+    echo "    1 -t=*|--target=*          : <build_target>   - agent | cm | emake"
+    echo "    2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
+    echo "    3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
+    echo "    4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu"
+    echo "    5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
+    echo "    6 -h  | --help  - print help"
+    echo 
 }
 
 printErrorMsg() {
@@ -61,14 +69,15 @@ printErrorMsg() {
 logMsg() {
     echo "<-log->| $1"
 }
-
-
+#functions
 
 if ! [ -z $HELP ]; then
     usage
+    exit 1
 fi
 
-docker -v  
+docker -v
+  
 if  [ $? != "0" ]; then
     echo "Docker is not installed or docker demon is stoped. Exit"
     exit 1
@@ -77,30 +86,29 @@ fi
 if [ "$TARGET" = "agent" ] || \
    [ "$TARGET" = "cm" ]    || \
    [ "$TARGET" = "emake" ] ; then
-   echo "Target = $TARGET" 
+   logMsg "TARGET - $TARGET" 
 else
-    echo "Target : $TARGET - is not in list of build targets"
+    printErrorMsg "Specifyed target: $TARGET - is not in list of build targets. Should be agent or cm or emake."
 fi
 
-if  [ -z $CONTENT_FOLDER ]; then
-    CONTENT_FOLDER=/tmp/acc_docker
+if [ -z $CONTENT_FOLDER ]; then
+   CONTENT_FOLDER=/tmp/acc_docker
 fi
 
-logMsg "CONTENT_FOLDER = $CONTENT_FOLDER"
+logMsg "CONTENT_FOLDER - $CONTENT_FOLDER"
 
 if ! [ -d $CONTENT_FOLDER ]; then
-    logMsg "Couldn't find CONTENT_FOLDER : $CONTENT_FOLDER"
+     logMsg "Couldn't find CONTENT_FOLDER : $CONTENT_FOLDER. I'll try to create it"
 fi
 
-
-
+#config
 PWD=`pwd`
 TOP=".." 
 
 BUILD_SRCDIR=$TOP/dockerfiles/$TARGET
 RULES_DIR=$BUILD_SRCDIR/rules
 
-if  [ -z $SYSTEM_NAME ] ; then
+if [ -z $SYSTEM_NAME ] ; then
    DOCKER_FILE_FOLDER=$BUILD_SRCDIR
    SYSTEM_NAME="_"
 else
@@ -112,32 +120,53 @@ if  [ -d $DOCKER_FILE ]; then
     printErrorMsg "There is no Dockerfile - $DOCKER_FILE !"
 fi
 
-#rm  $CONTENT_FOLDER/Dockerfile
-#rm  -r $CONTENT_FOLDER/opt/ecloud/rules
-#cp $DOCKER_FILE $CONTENT_FOLDER/
-#cp -r $RULES_DIR $CONTENT_FOLDER/opt/ecloud/
+BUILDDIR=$CONTENT_FOLDER/$TARGET
+logMsg "BUILDDIR - $BUILDDIR"
 
+if [ -z $REUSE ] ; then
+   if [ -d $BUILDDIR ]; then 
+      rm -r $BUILDDIR 
+   fi  
+fi
 
-BUILDDIR=$CONTENT_FOLDER/$TARGET/$SYSTEM_NAME
-if [ -d $BUILDDIR ]; then 
-    rm -r $BUILDDIR 
-fi 
-
-
-mkdir -p  $BUILDDIR
+if ! [-d $BUILDDIR ]; then
+     mkdir -p  $BUILDDIR
+else 
+   if [ -e $BUILDDIR/exclude  ]; then
+      rm -f $BUILDDIR/exclude
+   fi
+   if [ -e $BUILDDIR/Dockerfile  ]; then
+      rm -f $BUILDDIR/Dockerfile
+   fi
+   if [ -d $BUILDDIR/rules  ]; then
+      rm -rf $BUILDDIR/rules
+   fi
+fi
+#add files to the build folder 
 cp  $BUILD_SRCDIR/exclude  $BUILDDIR
 cp  -r  $BUILD_SRCDIR/rules  $BUILDDIR
 chmod +x  -R $BUILDDIR/rules
 cp  $DOCKER_FILE $BUILDDIR
-tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
-
+if  [ -z $REUSE ] ; then
+   if [ -e $BUILDDIR/ecloud.tar.gz ]; then
+      rm -f $BUILDDIR/ecloud.tar.gz
+   fi
+   tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
+else
+   if ! [ -e $BUILDDIR/ecloud.tar.gz ]; then
+        tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
+   fi 
+fi
 
 BUILD_VERSION_DEF=10.0 
 BUILD_VERSION=${BUILD_VERSION:=$BUILD_VERSION_DEF}
 IMG_NAME="${TARGET}_${BUILD_VERSION}_${SYSTEM_NAME}_alpha" 
+# go to working directory to execute docker run
 cd  $BUILDDIR
+
 if ! (docker build -t=$IMG_NAME .  ) then
    printErrorMsg "Image was not created!!!"
 else
   docker images
 fi
+
