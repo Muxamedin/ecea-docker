@@ -3,57 +3,41 @@
 Docker containers with Electric-Accelerator components
   *EMake*  *Agent* and *ClusterManager*
   
-To create an image with one of component:
+To create an image with Agent:
 
-1. Run v10 accelerator and  install on machine where docker image is to be prepared
-2. Run build.sh script to prepare /opt for docker image and build your image 
+Step 1. Install ECFS installer on host machine
+Step 2. Run agent install on machine where docker image needs to be prepared
+Step 3. Use build.sh to prepare /opt and output a docker image
 
-## Command
+## COMMAND1
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
+## COMMAND2
+```bash
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=ubuntu
+```
 
+## COMMAND3
+```bash
+   cd ecea-docker/build ;
+  ./build.sh -c=/tmp/test -t=agent -s=centos
+```
 
 ##USAGE
 ```
-   "Usage: $0 -t=<build_target> -c=<content_folder> -s=<platform name> [-v=<build_version>]"
-    "1 <build_target>:   agent | cm | emake"
-    "2 <build_version>:  in format like 10.0 - optional"
-    "3 <content_folder>: build folder to prepare content for acceletor-target docker image and build image from it"
-    "4 <platform name>:  rh | centos | ubuntu" 
-
-             -c=*|--contetnt_folder=*
-             -t=*|--target=*
-             -s=*|--system=*
-             -v=*|--vesrsion=*
-             -h  |--help=*
+    "Usage: ./build.sh -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>]"
+    "1 -t=*| --target=*          : <build_target>   - agent | cm | emake"
+    "2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
+    "3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
+    "4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu" 
+    "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
+    "6 -r  | --help  - print help" 
 ```
-As a result should be created :
-
-Image with "<nameofcomponent>_<build version>_<alpha>"
-
-## Example
-
-```
-  "agent_10.0_rh_alpha"
-```
-
-Before run container - on machine with docker should be downloaded and installed efs driver [link]
-
-3  Install: 
-``` 
-  ElectricAcceleratorFileSystem --mode console
-```
-
-
-
-To run agent container we need to use option as 
-
-```
---privileged=true --device /dev/efs --net=host
-```
+Step 4. Start up Docker image with the following commands:
 
 ## Command
 
@@ -63,7 +47,7 @@ docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8 
 
 By default agent will be pointed on CM which placed on localhost 
 
-To point container on another CM host - use:
+To point container CM host - use:
 
 ## Example
 
@@ -77,6 +61,7 @@ or
 ```
 -e CMHOST=10.200.1.97:8030
 ```
+
 To choose number of agents you can add option AGENT_NUMBER 
 
 ```
@@ -86,22 +71,21 @@ To choose number of agents you can add option AGENT_NUMBER
 ## Work with container :
 
 ```bash
-docker top  ea_agents
+docker top  ec_agents
 ```
 ```bash
-docker logs  ea_agents
+docker logs  ec_agents
 ```
 
 ```bash
-docker exec  ea_agents /opt/ecloud/i686_Linux/64/bin/emake -v
+docker exec  ec_agents /opt/ecloud/i686_Linux/64/bin/emake -v
 ```
+
 ```bash
-docker exec  ea_agents /opt/ecloud/i686_Linux/64/bin/emake -f /tmp/Makefile
+docker exec  ec_agents /opt/ecloud/i686_Linux/64/bin/emake -f /tmp/Makefile
 ```
 
 ```bash
 #interactive commandline
-docker exec -it ea_agents bash
+docker exec -it ec_agents bash
 ```
-
-
