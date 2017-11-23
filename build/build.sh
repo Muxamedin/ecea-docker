@@ -50,7 +50,7 @@ usage() {
     echo
     echo "Usage: $0 -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>] [-r ]"
     echo
-    echo "    1 -t=*|--target=*          : <build_target>   - agent | cm | emake"
+    echo "    1 -t=*|--target=*           : <build_target>   - agent | cm | emake"
     echo "    2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
     echo "    3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     echo "    4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu"
@@ -129,7 +129,7 @@ if [ -z $REUSE ] ; then
    fi  
 fi
 
-if ! [-d $BUILDDIR ]; then
+if ! [ -d $BUILDDIR ]; then
      mkdir -p  $BUILDDIR
 else 
    if [ -e $BUILDDIR/exclude  ]; then
@@ -148,6 +148,9 @@ cp  -r  $BUILD_SRCDIR/rules  $BUILDDIR
 chmod +x  -R $BUILDDIR/rules
 cp  $DOCKER_FILE $BUILDDIR
 if  [ -z $REUSE ] ; then
+   if ! [ -d /opt/ecloud  ]; then
+      printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
+   fi
    if [ -e $BUILDDIR/ecloud.tar.gz ]; then
       rm -f $BUILDDIR/ecloud.tar.gz
    fi
