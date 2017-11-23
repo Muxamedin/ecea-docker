@@ -129,7 +129,7 @@ if [ -z $REUSE ] ; then
    fi  
 fi
 
-if ! [-d $BUILDDIR ]; then
+if ! [ -d $BUILDDIR ]; then
      mkdir -p  $BUILDDIR
 else 
    if [ -e $BUILDDIR/exclude  ]; then
@@ -148,6 +148,9 @@ cp  -r  $BUILD_SRCDIR/rules  $BUILDDIR
 chmod +x  -R $BUILDDIR/rules
 cp  $DOCKER_FILE $BUILDDIR
 if  [ -z $REUSE ] ; then
+   if ! [ -d /opt/ecloud  ]; then
+      printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
+   fi
    if [ -e $BUILDDIR/ecloud.tar.gz ]; then
       rm -f $BUILDDIR/ecloud.tar.gz
    fi
