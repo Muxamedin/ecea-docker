@@ -50,7 +50,7 @@ usage() {
     echo
     echo "Usage: $0 -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>] [-r ]"
     echo
-    echo "    1 -t=*|--target=*          : <build_target>   - agent | cm | emake"
+    echo "    1 -t=*|--target=*           : <build_target>   - agent | cm | emake"
     echo "    2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
     echo "    3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     echo "    4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu"
