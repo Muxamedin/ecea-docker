@@ -1,0 +1,14 @@
+/opt/ecloud/i686_Linux/64/bin/EIInstaller
+/opt/ecloud/i686_Linux/64/bin/einsight
+/opt/ecloud/i686_Linux/64/lib/tk8.6/demos
+/opt/ecloud/i686_Linux/32/bin/EIInstaller
+/opt/ecloud/i686_Linux/32/bin/eilicense.xml
+/opt/ecloud/i686_Linux/32/bin/einsight
+/opt/ecloud/i686_Linux/32/lib/tk8.6/demos
+/opt/ecloud/i686_Linux/conf/accelerator.properties.old
+/opt/ecloud/i686_Linux/conf/database.properties.old
+/opt/ecloud/i686_Linux/conf/base.conf.old
+/opt/ecloud/uninstall*
+/opt/ecloud/install*
+/opt/ecloud/einsight.ico
+/opt/ecloud/i686_Linux/einsight.ico
