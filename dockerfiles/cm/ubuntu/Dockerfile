@@ -15,6 +15,7 @@ RUN /usr/sbin/useradd -d /opt/ecloud -c "" "eacmuser"
 #5
 #docker >= 17.09
 ADD   --chown=eacmuser ecloud.tar.gz /
+#6
 COPY rules /opt/ecloud/rules
 # ---------------------------------------------------
 # expose section
@@ -28,7 +29,7 @@ EXPOSE 3306
 # http port
 EXPOSE 80
 #erunner port
-#EXPOSE 241
+#EXPOSE 2411
 #https
 EXPOSE  443
 # ---------------------------------------------------
