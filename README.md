@@ -39,7 +39,7 @@ Step 2. Use build.sh to prepare /opt and output a docker image
     "3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     "4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu" 
     "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
-    "6 -r  | --help  - print help" 
+    "6 -h  | --help  - print help" 
 ```
 
 Every build of image with agent will be created  <content_folder>/agent/ecloud.tar.gz archive
