@@ -34,8 +34,8 @@ Step 2. Use build.sh to prepare /opt and output a docker image
 ```
     "Usage: ./build.sh -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>]"
     "1 -t=*| --target=*          : <build_target>   - agent | cm | emake"
-    "2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
-    "3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
+    "2 -v=*| --version=*         : <build_version>  - in format like 10.0 - optional"
+    "3 -c=*| --content_folder=*  : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     "4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu" 
     "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
     "6 -h  | --help  - print help" 
