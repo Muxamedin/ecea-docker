@@ -76,7 +76,7 @@ cd ecea-docker/build && \
    -r 
 ```
 
-Step 3. Run the ECFS installer on the host machine where will be started docker container with agents
+Step 3. Run the ECFS installer on the host machine where will be started docker container with agents (Ask ElectricCloud for ECFS installer)
 
 Step 4. Start up Docker image with the following commands:
 
