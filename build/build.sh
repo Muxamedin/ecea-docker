@@ -3,7 +3,7 @@
 for i in "$@" 
 do
         case $i in
-             -c=*|--contetnt_folder=*)
+             -c=*|--content_folder=*)
              CONTENT_FOLDER="${i#*=}"
              shift # past argument=value
              ;;
@@ -15,7 +15,7 @@ do
              SYSTEM_NAME="${i#*=}"
              shift # past argument=value
              ;;
-             -v=*|--vesrsion=*)
+             -v=*|--version=*)
              BUILD_VERSION="${i#*=}"
              shift # past argument=value
              ;;
@@ -50,9 +50,9 @@ usage() {
     echo
     echo "Usage: $0 -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>] [-r ]"
     echo
-    echo "    1 -t=*|--target=*           : <build_target>   - agent | cm | emake"
-    echo "    2 -v=*| --vesrsion=*        : <build_version>  - in format like 10.0 - optional"
-    echo "    3 -c=*| --contetnt_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
+    echo "    1 -t=*| --target=*          : <build_target>   - agent | cm | emake"
+    echo "    2 -v=*| --version=*         : <build_version>  - in format like 10.0 - optional"
+    echo "    3 -c=*| --content_folder=*  : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     echo "    4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu"
     echo "    5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
     echo "    6 -h  | --help  - print help"
