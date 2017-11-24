@@ -46,7 +46,7 @@ Step 4. Start up Docker image with the following commands:
 ## Command
 
 ```bash
-docker run  -i -d -t  -p 80:80 -p 8080:8080 -p 8081:8081 -p 443:443 -p 3306:3306 --name=cm1  cm_10.0_rh_alpha
+docker run  -i -d -t  -p 80:80 -p 8030:8030 -p 8031:8031 -p 443:443 -p 3306:3306 --name=cm1  cm_10.0_rh_alpha
 ```
 Step 5. Lunch ip address of machine, where was started docker continer with clustermanager, in addres bar  - to see ClusterManager UI 
 
