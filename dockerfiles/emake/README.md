@@ -15,7 +15,7 @@ Step 2. Use build.sh to prepare /opt and output a docker image
 ## COMMAND1 to build RedHat image
 ```bash
    cd ecea-docker/build ;
-  ./build.sh -c=/tmp/build -t=emake-s=rh
+  ./build.sh -c=/tmp/build -t=emake -s=rh
 ```
 
 ## COMMAND2 to build ubuntu image
@@ -30,7 +30,7 @@ Step 2. Use build.sh to prepare /opt and output a docker image
   ./build.sh -c=/tmp/build -t=emake -s=centos
 ```
 
-##USAGE
+## USAGE
 ```
     "Usage: ./build.sh -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>]"
     "1 -t=*| --target=*          : <build_target>   - agent | cm | emake"
@@ -46,7 +46,7 @@ Step 4. Start up Docker image with the following commands:
 ## Command
 
 ```bash
-docker run  -it  --name=emake_c  emake_10.0_ubutnut_alpha
+docker run  -it -v /home/dev/prj:/home/dev/prj  -w /home/dev/prj --name=emake_c  emake_10.0_ubutnut_alpha
 ```
 
 ## Work with container :
