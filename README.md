@@ -35,7 +35,7 @@ Step 2. Use build.sh to prepare /opt and output a docker image
 ```
 
 
-##USAGE
+## USAGE
 ```
     "Usage: ./build.sh -t=<build_target> -c=<content_folder> -s=<system_name> [-v=<build_version>]"
     "1 -t=*| --target=*          : <build_target>   - agent | cm | emake"
