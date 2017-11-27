@@ -14,7 +14,7 @@ RUN  /usr/sbin/useradd -d /opt/ecloud -c "" "eacmuser"
 # ---------------------------------------------------
 #4
 #docker >= 17.09
-ADD  --chown=eacmuser  ecloud.tar.gz /
+ADD   ecloud.tar.gz /
 #5 -----------------------------------------
 COPY rules /opt/ecloud/rules
 # ---------------------------------------------------

@@ -1,7 +1,9 @@
 #!/bin/bash
+chown -R  eacmuser:eacmuser  /opt/ecloud/i686_Linux
 echo "Starting ElectricAccelerator CM ..."
-echo "<--Log--$0> | /opt/ecloud/i686_Linux/64/bin/clustermanager"
-(tail -n 4 -f /opt/ecloud/i686_Linux/logs/accelerator.log) &
+echo "<--Log--$0> | /opt/ecloud/i686_Linux/64/bin/clustermanager start "
 (/opt/ecloud/i686_Linux/64/bin/clustermanager start) &
 (tail -n 4 -f /var/log/cmlog) &
+(tail -n 4 -f /opt/ecloud/i686_Linux/logs/accelerator.log) &
+
 bash
