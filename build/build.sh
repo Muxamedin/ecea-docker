@@ -27,6 +27,10 @@ do
              REUSE=1
              shift # past argument with no value
              ;;
+             -o|--onlytar)
+             ONLYTAR=1
+             shift # past argument with no value
+             ;;
              *)
              # unknown option
              ;;
@@ -55,7 +59,8 @@ usage() {
     echo "    3 -c=*| --content_folder=*  : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     echo "    4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu"
     echo "    5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
-    echo "    6 -h  | --help  - print help"
+    echo "    6 -o  | --onlytar - build tar and exit"
+    echo "    7 -h  | --help  - print help"
     echo 
 }
 
@@ -76,20 +81,24 @@ if ! [ -z $HELP ]; then
     exit 1
 fi
 
-docker -v
+#docker -v
   
 if  [ $? != "0" ]; then
     echo "Docker is not installed or docker demon is stoped. Exit"
     exit 1
 fi 
 
-if [ "$TARGET" = "agent" ] || \
-   [ "$TARGET" = "cm" ]    || \
-   [ "$TARGET" = "emake" ] ; then
-   logMsg "TARGET - $TARGET" 
+
+
+
+if   [ "$TARGET" = "agent" ] || \
+     [ "$TARGET" = "cm" ]    || \
+     [ "$TARGET" = "emake" ] ; then
+         logMsg "TARGET - $TARGET" 
 else
-    printErrorMsg "Specifyed target: $TARGET - is not in list of build targets. Should be agent or cm or emake."
+      printErrorMsg "Specifyed target: $TARGET - is not in list of build targets. Should be agent or cm or emake."
 fi
+ 
 
 if [ -z $CONTENT_FOLDER ]; then
    CONTENT_FOLDER=/tmp/acc_docker
@@ -147,6 +156,17 @@ cp  $BUILD_SRCDIR/exclude  $BUILDDIR
 cp  -r  $BUILD_SRCDIR/rules  $BUILDDIR
 chmod +x  -R $BUILDDIR/rules
 cp  $DOCKER_FILE $BUILDDIR
+if ! [ -z $ONLYTAR ]; then
+    if ! [ -d /opt/ecloud  ]; then
+      printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
+   fi
+   if [ -e $BUILDDIR/ecloud.tar.gz ]; then
+      rm -f $BUILDDIR/ecloud.tar.gz
+   fi
+   tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
+   echo "Look at  $BUILDDIR   for  ecloud.tar.gz"
+   exit 0
+fi
 if  [ -z $REUSE ] ; then
    if ! [ -d /opt/ecloud  ]; then
       printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
@@ -166,7 +186,7 @@ BUILD_VERSION=${BUILD_VERSION:=$BUILD_VERSION_DEF}
 IMG_NAME="${TARGET}_${BUILD_VERSION}_${SYSTEM_NAME}_alpha" 
 # go to working directory to execute docker run
 cd  $BUILDDIR
-
+docker -v
 if ! (docker build -t=$IMG_NAME .  ) then
    printErrorMsg "Image was not created!!!"
 else
