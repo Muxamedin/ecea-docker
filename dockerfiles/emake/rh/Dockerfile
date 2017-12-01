@@ -1,4 +1,4 @@
-FROM chanchal/rhel72
+FROM yjjy0921/redhat7.2
 
 #0
 RUN yum -y update; yum clean all
