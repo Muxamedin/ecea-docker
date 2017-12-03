@@ -38,7 +38,9 @@ Step 2. Use build.sh to prepare /opt and output a docker image
     "3 -c=*| --content_folder=* : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     "4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu" 
     "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
-    "6 -h  | --help  - print help" 
+    "6 -o  | --onlytar - tar from /opt/ecloud to the tarball with name ecloud.tar.gz and exit
+           should be used with flags : --target, --content_folder --system"
+    "7 -h  | --help  - print help" 
 ```
 Step 4. Start up Docker image with the following commands:
 

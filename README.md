@@ -22,13 +22,13 @@ Step 2. Use build.sh to prepare /opt and output a docker image
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
-## COMMAND2 to build ubuntu image
+## COMMAND2 to build Ubuntu image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=ubuntu
 ```
 
-## COMMAND3 to build centos image
+## COMMAND3 to build Centos image
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=centos
@@ -43,13 +43,15 @@ Step 2. Use build.sh to prepare /opt and output a docker image
     "3 -c=*| --content_folder=*  : <content_folder> - build folder to prepare content for acceletor-target docker image and build image from it"
     "4 -s=*| --system=*          : <system_name>    - rh | centos | ubuntu" 
     "5 -r  | --reuse - tell to the build image  process to reuse tar archive (if it was prepared earlier) instead of creating new one - optional" 
-    "6 -h  | --help  - print help" 
+    "6 -o  | --onlytar - tar from /opt/ecloud to the tarball with name ecloud.tar.gz and exit
+             should be used with flags : --target, --content_folder --system
+    "
+    "7 -h  | --help  - print help" 
 ```
 
-Every build of image with agent will be created  <content_folder>/agent/ecloud.tar.gz archive
-To have ability reuse ecloud.tar.gz on a another machines for building image  (no need to install again agents on a machine)
-user can use option -r 
-
+Every build of image with agent will be created  <content_folder>/agent/ecloud.tar.gz archive.
+To have ability reuse ecloud.tar.gz on a another machines for building image  (no need to install again Agents ClusterManager or Emake on a machine next time)
+user can use option -r or --reuse
 
 To use  -r option:
 
@@ -75,6 +77,23 @@ cd ecea-docker/build && \
    -s=rh \
    -r 
 ```
+
+If you need to create 'ecloud.tar.gz' only - there is a flag '-o' or '--onlytar'
+(you can use created tarball with flag '--reuse' in future on any host)
+To create 'ecloud.tar.gz':
+A. Be sure that you done with installation files on a machine (Step 1.)
+B. Run command : 
+## create only ecloud.tar.gz and exit 
+```bash
+  CONTENT_FOLDER=/tmp/test
+   ./build.sh -t=agent \
+   -c=$CONTENT_FOLDER \
+   -s=rh \
+   --onlytar
+```
+as a condition  --onlytar | -o - options should be used with flags -t, -c, -s 
+C. As a result of build proces - will printed (to the sdout) path to created 'ecloud.tar.gz'
+  
 
 Step 3. Run the ECFS installer on the host machine where will be started docker container with agents (Ask ElectricCloud for ECFS installer)
 
