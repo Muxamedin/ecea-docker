@@ -75,8 +75,11 @@ cd ecea-docker/build && \
 If you need to create 'ecloud.tar.gz' only - there is a flag '-o' or '--onlytar'
 (you can use tarball with flag '--reuse' in future on any host)
 To create 'ecloud.tar.gz':
+
 A. Be sure that you done with installation files on a machine (Step 1.)
+
 B. Run command : 
+
 ## create only ecloud.tar.gz and exit 
 ```bash
   CONTENT_FOLDER=/tmp/test
@@ -86,6 +89,7 @@ B. Run command :
    --onlytar
 ```
 as a condition  --onlytar | -o - options should be used with flags -t, -c, -s 
+
 C. As a result of build proces - will printed (to the sdout) path to created 'ecloud.tar.gz'
 
 
