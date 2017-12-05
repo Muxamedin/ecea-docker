@@ -9,31 +9,54 @@ Docker containers with Electric-Accelerator components
  [*EMake*](https://github.com/Muxamedin/ecea-docker/blob/master/dockerfiles/emake)
 
   
-To create an image with Agents:
+To create an image :
 
-
-Step 1. Run agent install on machine where docker image needs to be prepared
+Step 1. Run software install on machine where docker image needs to be prepared
 
 Step 2. Use build.sh to prepare /opt and output a docker image
 
-## COMMAND1 to build RedHat image
+Examples :
+
+Build agents image on RedHat
+
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=rh
 ```
 
-## COMMAND2 to build Ubuntu image
+Build agents image on Ubuntu
+
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=ubuntu
 ```
 
-## COMMAND3 to build Centos image
+Build agents image on CentOS
+
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/test -t=agent -s=centos
 ```
 
+Step 3. Run the ECFS installer on the host machine where docker container with agents will be started (Ask ElectricCloud for ECFS installer)
+
+Step 4. Start up Docker image
+Example for starting agents :
+
+```bash
+   docker run --privileged=true \
+   -i -d -t \
+   -e CMHOST=10.200.1.97 -e AGENT_NUMBER=2 \
+   --device /dev/efs \
+   --net=host \
+   --name=ec_agent \
+   agent_10.0_rh_alpha
+```
+where :
+
+ -e CMHOST=10.200.1.97  - IP Address of Cluster Manager host for agents to connect, default is localhost
+ 
+ -e AGENT_NUMBER=2      - number of agents to start
 
 ## USAGE
 ```
@@ -49,43 +72,17 @@ Step 2. Use build.sh to prepare /opt and output a docker image
     "7 -h  | --help  - print help" 
 ```
 
-Every build of image with agent will be created  <content_folder>/agent/ecloud.tar.gz archive.
-To have ability reuse ecloud.tar.gz on a another machines for building image  (no need to install again Agents ClusterManager or Emake on a machine next time)
-user can use option -r or --reuse
+## To create only archive for further generation of docker image
 
-To use  -r option:
-
-- Please create <content_folder>  folder on your new machine - it could be something like /tmp/test
-
-- Create folder  /tmp/test/agent
-
-- Copy ecloud.tar.gz from your build machine to the  /tmp/test/agent
-
-- Run build (see  COMMAND4)
-
-## COMMAND4 to rebuild RedHat image from existed ecloud.tar.gz file 
-```bash 
-   CONTENT_FOLDER=/tmp/test
-   mkdir -r $CONTENT_FOLDER/agent
-
- 
-cp ../from/ecloud.tar.gz  to $CONTENT_FOLDER/agent 
-   
-cd ecea-docker/build && \
-  ./build.sh -t=agent \
-   -c=$CONTENT_FOLDER \
-   -s=rh \
-   -r 
-```
-
-If you need to create 'ecloud.tar.gz' only - there is a flag '-o' or '--onlytar'
-(you can use created tarball with flag '--reuse' in future on any host)
+If you need to create 'ecloud.tar.gz' only - there is an option '-o' or '--onlytar'
+(you can use created archive with option '--reuse' in future on any host)
 To create 'ecloud.tar.gz':
 
-A. Be sure that you done with installation files on a machine (Step 1.)
+- Be sure that you done with installation files on a machine (Step 1.)
 
-B. Run command : 
-## create only ecloud.tar.gz and exit 
+- Run build.sh with --onlytar option
+
+Example for agents on RedHat : 
 ```bash
   CONTENT_FOLDER=/tmp/test
    ./build.sh -t=agent \
@@ -95,60 +92,37 @@ B. Run command :
 ```
 as a condition  --onlytar | -o - options should be used with flags -t, -c, -s 
 
-C. As a result of build proces - will be printed (to the stdout) path to created 'ecloud.tar.gz'
+- As a result build process will be printed (to the stdout) path of created 'ecloud.tar.gz'
+
+## Reuse of ecloud.tar.gz archive
+
+To reuse ecloud.tar.gz on a another machines for building docker image (no need to install again Agents or ClusterManager or Emake on a machine) user can use option -r or --reuse
+
+To use -r option:
+
+- Create <content_folder> folder on your new machine, eg. /tmp/test
+
+- Create target folder in it, eg. <content_folder>/agent
+
+- Copy ecloud.tar.gz from your build machine to the target folder, eg. /tmp/test/agent
+
+- Run build.sh
+
+Example :
+
+```bash 
+   CONTENT_FOLDER=/tmp/test
+   
+   mkdir -r $CONTENT_FOLDER/agent 
+   
+   cp ../from/ecloud.tar.gz  to $CONTENT_FOLDER/agent 
+   
+   cd ecea-docker/build && \
+   ./build.sh -t=agent \
+   -c=$CONTENT_FOLDER \
+   -s=rh \
+   -r 
+```
+
   
 
-Step 3. Run the ECFS installer on the host machine where will be started docker container with agents (Ask ElectricCloud for ECFS installer)
-
-Step 4. Start up Docker image with the following commands:
-
-## Command
-
-```bash
-docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8  --device /dev/efs --net=host --name=ec_agent  agent_10.0_rh_alpha
-```
-
-By default agent will be pointed on CM which placed on localhost 
-
-To point container CM host - use:
-
-## Example
-
-```
--e CMHOST=10.200.1.97
-```
-or 
-
-## Example
-
-```
--e CMHOST=10.200.1.97:8030
-```
-
-To choose number of agents you can add option AGENT_NUMBER 
-
-```
--e AGENT_NUMBER=digit_number_agents
-```
-
-## Work with container :
-
-```bash
-docker top  ec_agents
-```
-```bash
-docker logs  ec_agents
-```
-
-```bash
-docker exec  ec_agents /opt/ecloud/i686_Linux/64/bin/emake -v
-```
-
-```bash
-docker exec  ec_agents /opt/ecloud/i686_Linux/64/bin/emake -f /tmp/Makefile
-```
-
-```bash
-#interactive commandline
-docker exec -it ec_agents bash
-```
