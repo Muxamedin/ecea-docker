@@ -3,31 +3,37 @@ Docker containers with Electric-Accelerator components
 
    *Emake*
   
-To create an image with Emake:
-
-
+To create a docker image with Emake:
 
 Step 1. Run Accelerator Emake install on machine where docker image needs to be prepared
 
 Step 2. Use build.sh to prepare /opt and output a docker image
 
+Examples :
 
-## COMMAND1 to build RedHat image
+To create docker image on RedHat
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/build -t=emake -s=rh
 ```
 
-## COMMAND2 to build ubuntu image
+To create docker image on Ubuntu
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/build -t=emake -s=ubuntu
 ```
 
-## COMMAND3 to build centos image
+To create docker image on CentOS
 ```bash
    cd ecea-docker/build ;
   ./build.sh -c=/tmp/build -t=emake -s=centos
+```
+
+Step 4. Start up docker image
+
+Example :
+```bash
+docker run -it -d -v /home/dev/prj:/home/dev/prj  -w /home/dev/prj --name=emake_c  emake_10.0_ubuntu_alpha
 ```
 
 ## USAGE
@@ -41,26 +47,4 @@ Step 2. Use build.sh to prepare /opt and output a docker image
     "6 -o  | --onlytar - tar from /opt/ecloud to the tarball with name ecloud.tar.gz and exit
            should be used with flags : --target, --content_folder --system"
     "7 -h  | --help  - print help" 
-```
-Step 4. Start up Docker image with the following commands:
-
-
-## Command
-
-```bash
-docker run  -it -v /home/dev/prj:/home/dev/prj  -w /home/dev/prj --name=emake_c  emake_10.0_ubutnut_alpha
-```
-
-## Work with container :
-
-```bash
-docker top  emake_c
-```
-```bash
-docker logs  emake_c
-```
-
-```bash
-#interactive commandline
-docker exec -it emake_c bash
 ```
