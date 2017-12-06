@@ -3,7 +3,7 @@
 FROM ubuntu:16.04
 #1st layer 
 # ---------------------------------------------------
-RUN apt-get update && apt-get install -y gcc
+RUN apt-get update && apt-get install -y gcc g++
 # ---------------------------------------------------
 #2
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
