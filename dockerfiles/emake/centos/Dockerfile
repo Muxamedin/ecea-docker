@@ -1,11 +1,7 @@
 # choose system ---------------------------------------------------
 FROM  centos 
 #0
-RUN yum -y update; yum clean all
-#1
-RUN yum -y install epel-release; yum clean all
-#2
-RUN yum install -y gcc;  yum clean all
+RUN  yum -y update &&  yum -y install epel-release  gcc gcc-c++.x86_64  ;  yum clean all
 #3
 ADD  ecloud.tar.gz /
 #4
