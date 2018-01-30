@@ -37,18 +37,15 @@ do
         esac
 done
 
-
 #functions
 workingdir() {
-    if ! [ -d $CONTENT_FOLDER ]; then
+  if ! [ -d $CONTENT_FOLDER ]; then
        mkdir $CONTENT_FOLDER > /dev/null
        if [$? != "0"]; then 
          printErrorMsg "Can't create folder $CONTENT_FOLDER"
        fi 
-   fi 
+  fi 
 }
-
-
 
 usage() {
     echo
@@ -74,31 +71,25 @@ printErrorMsg() {
 logMsg() {
     echo "<-log->| $1"
 }
-#functions
+#the end of functions section
 
 if ! [ -z $HELP ]; then
     usage
     exit 1
 fi
-
-#docker -v
   
 if  [ $? != "0" ]; then
     echo "Docker is not installed or docker demon is stoped. Exit"
     exit 1
 fi 
 
-
-
-
 if   [ "$TARGET" = "agent" ] || \
      [ "$TARGET" = "cm" ]    || \
      [ "$TARGET" = "emake" ] ; then
-         logMsg "TARGET - $TARGET" 
+     logMsg "TARGET - $TARGET" 
 else
       printErrorMsg "Specifyed target: $TARGET - is not in list of build targets. Should be agent or cm or emake."
 fi
- 
 
 if [ -z $CONTENT_FOLDER ]; then
    CONTENT_FOLDER=/tmp/acc_docker
@@ -107,7 +98,7 @@ fi
 logMsg "CONTENT_FOLDER - $CONTENT_FOLDER"
 
 if ! [ -d $CONTENT_FOLDER ]; then
-     logMsg "Couldn't find CONTENT_FOLDER : $CONTENT_FOLDER. I'll try to create it"
+   logMsg "Couldn't find CONTENT_FOLDER : $CONTENT_FOLDER. I'll try to create it"
 fi
 
 #config
@@ -123,10 +114,11 @@ if [ -z $SYSTEM_NAME ] ; then
 else
    DOCKER_FILE_FOLDER=$BUILD_SRCDIR/$SYSTEM_NAME
 fi
+
 DOCKER_FILE=$DOCKER_FILE_FOLDER/Dockerfile
 
-if  [ -d $DOCKER_FILE ]; then 
-    printErrorMsg "There is no Dockerfile - $DOCKER_FILE !"
+if [ -d $DOCKER_FILE ]; then 
+   printErrorMsg "There is no Dockerfile - $DOCKER_FILE !"
 fi
 
 BUILDDIR=$CONTENT_FOLDER/$TARGET
@@ -151,13 +143,15 @@ else
       rm -rf $BUILDDIR/rules
    fi
 fi
-#add files to the build folder 
-cp  $BUILD_SRCDIR/exclude  $BUILDDIR
-cp  -r  $BUILD_SRCDIR/rules  $BUILDDIR
-chmod +x  -R $BUILDDIR/rules
+#the end of config section
+
+#add files to the build folder
+cp  $BUILD_SRCDIR/exclude $BUILDDIR
+cp  -r $BUILD_SRCDIR/rules $BUILDDIR
+chmod +x -R $BUILDDIR/rules
 cp  $DOCKER_FILE $BUILDDIR
 if ! [ -z $ONLYTAR ]; then
-    if ! [ -d /opt/ecloud  ]; then
+   if ! [ -d /opt/ecloud  ]; then
       printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
    fi
    if [ -e $BUILDDIR/ecloud.tar.gz ]; then
@@ -167,7 +161,7 @@ if ! [ -z $ONLYTAR ]; then
    echo "Look at  $BUILDDIR   for  ecloud.tar.gz"
    exit 0
 fi
-if  [ -z $REUSE ] ; then
+if [ -z $REUSE ] ; then
    if ! [ -d /opt/ecloud  ]; then
       printErrorMsg "Accelerator  should be installed  brefore  running $0. Can't find /opt/ecloud folder."
    fi
@@ -177,7 +171,7 @@ if  [ -z $REUSE ] ; then
    tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
 else
    if ! [ -e $BUILDDIR/ecloud.tar.gz ]; then
-        tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
+      tar -cvzf $BUILDDIR/ecloud.tar.gz --exclude-from=$BUILDDIR/exclude /opt/ecloud
    fi 
 fi
 
@@ -192,4 +186,3 @@ if ! (docker build -t=$IMG_NAME .  ) then
 else
   docker images
 fi
-
