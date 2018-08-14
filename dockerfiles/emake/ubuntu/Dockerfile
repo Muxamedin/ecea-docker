@@ -3,7 +3,7 @@
 FROM ubuntu:16.04
 #1st layer 
 # ---------------------------------------------------
-RUN apt-get update && apt-get install -y gcc g++
+RUN apt-get update && apt-get install -y gcc g++ netbase
 # ---------------------------------------------------
 #2
 ADD  ecloud.tar.gz /
