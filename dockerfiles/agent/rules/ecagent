@@ -2,7 +2,7 @@
 #
 # ecagent
 #
-# Copyright (c) 2002-2017 Electric Cloud, Inc.
+# Copyright (c) 2002-2018 Electric Cloud, Inc.
 # All rights reserved
 #
 #
@@ -106,7 +106,7 @@ EMAKESECURITY=
 TRACE=
 
 if [ -f /etc/sysconfig/ecagent.conf ]; then
-        echo  "<--Log--> | reading from ecagent.conf"
+        echo  "<--Log--$0> | Reading from ecagent.conf"
         . /etc/sysconfig/ecagent.conf   ;# Load an optional configuration
                                          # file. This is for Linux.
 else
@@ -143,16 +143,18 @@ checkProcess() {
 startAgent() {
     DISKCACHE_LOGFILE=/var/log/diskcache.log
 
+    # Set AGENT_NUMBER (if it is empty) in container to 1 
+    AGENT_NUMBER=${AGENT_NUMBER:=1}
+
     # Start up the correct number of agents based on the value specified in
     # the configuration file.
-
     if [ -z "$AGENT_NUMBER" ] ; then
-        echo "AGENT_NUMBER is not set.  I don't know how many agents to start."
+        echo "AGENT_NUMBER is not set. I don't know how many agents to start."
         exit 1
     fi
 
     if /usr/bin/pgrep -f $AGENT -P 1 > /dev/null ; then
-        echo "Agents already running"
+        echo "<--Log--$0> | Agents already running"
         exit 1
     fi
 
@@ -165,24 +167,33 @@ startAgent() {
     $INSTDIR/$EC_ARCH/$BINDIR/ecfixupdatedb
 
     # Start the diskcache manager
-    echo  "<--Log--> | Going to run $DISKCACHE"
+    echo  "<--Log--$0> | Going to run $DISKCACHE"
     $DISKCACHE $RUNDISKCACHE -logfile $DISKCACHE_LOGFILE -numagents $AGENT_NUMBER -tempdir "$TEMPDIR"
-    echo  "<--Log--> | startted with $DISKCACHE $RUNDISKCACHE -logfile $DISKCACHE_LOGFILE -numagents $AGENT_NUMBER -tempdir $TEMPDIR"
+    echo  "<--Log--$0> | Started $DISKCACHE $RUNDISKCACHE -logfile $DISKCACHE_LOGFILE -numagents $AGENT_NUMBER -tempdir $TEMPDIR"
     /bin/sleep 2
-    echo  "<--Log--> | sleep done. go to run agent"
-    i=0
-    while [ $i -lt $AGENT_NUMBER ] ; do
-           
-        if [ -n "$SHARED_AGENT_NUMBER" ] && [ $i -ge $SHARED_AGENT_NUMBER ] ; then
-            $AGENT $RUNAGENT -daemon yes -cm $CMHOST:$CMPORT -efsid $i -numagents $AGENT_NUMBER -secureconsole $SECURE_CONSOLE -diskcacheportfile $DISKCACHE_PORTFILE -tempdir "$TEMPDIR" -local 1 -emakesecurity "$EMAKESECURITY" -trace "$TRACE"
-        else 
-            $AGENT $RUNAGENT -daemon yes -cm $CMHOST:$CMPORT -efsid $i -numagents $AGENT_NUMBER -secureconsole $SECURE_CONSOLE -diskcacheportfile $DISKCACHE_PORTFILE -tempdir "$TEMPDIR" -local "$LOCALAGENT" -emakesecurity "$EMAKESECURITY" -trace "$TRACE"
-        fi
-        i=`/usr/bin/expr $i + 1`
-    done
-    echo  "<--Log--> | check /var/lock/subsys exists"
+    
+    # If EFS_ID is empty set it as "0"
+    EFS_ID=${EFS_ID:=0}
+    
+    # Calculate count of cpu
+    if  [ -f /usr/bin/nproc ]; then 
+            CNTCPU=`/usr/bin/nproc --all`
+    elif [ -z $CNTCPU ] && [ -f /usr/bin/getconf ] ; then
+            CNTCPU=`/usr/bin/getconf _NPROCESSORS_ONLN`
+    elif [ -z $CNTCPU ]; then
+            CNTCPU=`cat /proc/cpuinfo \
+                | /bin/grep processor \
+                | /usr/bin/wc -l`
+    fi
+
+    # EFS_ID should be in range [0..CNT_CPU-1]
+    if [ $EFS_ID -ge $CNTCPU  ]; then
+            echo  "<--Log--$0> | ERROR: EFS_ID must be less than CPU number of docker host. CPU=$CNTCPU, EFS_ID=$EFS_ID."
+            exit 3     
+    fi
+    
+    $AGENT $RUNAGENT -daemon yes -cm $CMHOST:$CMPORT -efsid $EFS_ID -numagents $AGENT_NUMBER -secureconsole $SECURE_CONSOLE -diskcacheportfile $DISKCACHE_PORTFILE -tempdir "$TEMPDIR" -local 1 -emakesecurity "$EMAKESECURITY" -trace "$TRACE"
     if [ -d /var/lock/subsys ]; then
-        echo  "<--Log--> | doing touch /var/lock/subsys"
         /bin/touch /var/lock/subsys/ecagent
     fi
 }
@@ -203,7 +214,7 @@ startAgent() {
 killProcess() {
     count=`/usr/bin/pgrep -f $1 -P 1 | /usr/bin/wc -l`
     if [ $count -eq 0 ] ; then
-          return
+        return
     fi
 
     # Check how many instances are running.
@@ -235,7 +246,6 @@ killProcess() {
         if [ $current -ne $count ] ; then
             # At least one instance of the process has exited.  Reset the
             # watchdog timer.
-
             watchdog=0
         else
             # No instances of the process have exited since the last check.
@@ -400,4 +410,3 @@ case "$1" in
 esac
 
 exit $RETVAL
-

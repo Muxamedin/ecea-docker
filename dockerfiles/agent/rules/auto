@@ -4,9 +4,9 @@ CMHOST_CONF=localhost
 CMPORT_CONF=8030
 LSF_HOST_CONF=n
 MAX_OPEN_FDS_CONF=
-AGENT_NUMBER_CONF=2
 SECURE_CONSOLE_CONF=n
-SHARED_AGENT_NUMBER_CONF=2
+AGENT_NUMBER_CONF=1
+SHARED_AGENT_NUMBER_CONF=1
 TEMPDIR_CONF=/tmp
 
 CMHOST_CONF=${CM_HOST:=$CMHOST_CONF}
@@ -16,10 +16,16 @@ INSTALL_ERUNNERD_CONF=${INSTALL_ERUNNERD:=$INSTALL_ERUNNERD_CONF}
 LOG_REMOVE_CONF=${LOG_REMOVE:=$LOG_REMOVE_CONF}
 LSF_HOST_CONF=${LSF_HOST:=$LSF_HOST_CONF}
 MAX_OPEN_FDS_CONF=${MAX_OPEN_FDS:=$MAX_OPEN_FDS_CONF}
-AGENT_NUMBER_CONF=${AGENT_NUMBER:=$AGENT_NUMBER_DEFAULT}
 SECURE_CONSOLE_CONF=${SECURE_CONSOLE:=$SECURE_CONSOLE_CONF}
-SHARED_AGENT_NUMBER_CONF=${SHARED_AGENT_NUMBER_CONF:=$SHARED_AGENT_NUMBER_CONF}
 TEMPDIR_CONF=${TEMPDIR:=$TEMPDIR_CONF}
+EFS_ID=${EFS_ID:=0}
+
+if  [  -z "${EFS_ID##*[!0-9]*}" ] ; then 
+    echo "<--Log--$0> | WARNING: EFS_ID - non-numeric value, EFS_ID=$EFS_ID"
+    EFS_ID=0
+    echo "<--Log--$0> | INFORMATION: Setting EFS_ID to default value, EFS_ID=0"
+fi
+export EFS_ID
 
 echo CMHOST_CONF=$CMHOST_CONF
 echo CMPORT_CONF=$CMPORT_CONF
@@ -33,24 +39,28 @@ echo SECURE_CONSOLE_CONF=$SECURE_CONSOLE_CONF
 echo SHARED_AGENT_NUMBER_CONF=$SHARED_AGENT_NUMBER_CONF
 echo TEMPDIR_CONF=$TEMPDIR_CONF
 
-/opt/ecloud/i686_Linux/64/bin/ecconfig  -cm "$CMHOST_CONF"  -numagents "$AGENT_NUMBER_CONF"  -lsfhost "$LSF_HOST_CONF" -tempdir "$TEMPDIR_CONF"
+/opt/ecloud/i686_Linux/64/bin/ecconfig -cm "$CMHOST_CONF" -numagents $AGENT_NUMBER_CONF -lsfhost "$LSF_HOST_CONF" -tempdir "$TEMPDIR_CONF"
 
 # Start erunner
-echo "<--Log--$0> | Going to run /opt/ecloud/rules/erunner"
+echo "<--Log--$0> | Run /opt/ecloud/rules/erunner"
 /opt/ecloud/rules/erunner  start
 status=$?
-echo "<--Log--$0> | Status erunner - $status"
+
 if [ $status -ne 0 ]; then
   echo "<--Log--$0> Failed to start /opt/ecloud/rules/erunner: $status"
   exit $status
+else
+  echo "<--Log--$0> | Status erunner - OK " 
 fi
 
 # Start ecagent
-echo "<--Log--$0> | Going to run /opt/ecloud/rules/ecagent"
+echo "<--Log--$0> | Run /opt/ecloud/rules/ecagent"
 /opt/ecloud/rules/ecagent  start
 status=$?
-echo "<--Log--$0> | Status ecagent - $status"
 if [ $status -ne 0 ]; then
-  echo "<--Log--$0> Failed to start /opt/ecloud/rules/ecagent: $status"
+  echo "<--Log--$0> | Failed to start /opt/ecloud/rules/ecagent: $status"
+  exit 1
+else 
+  echo "<--Log--$0> | Status ecagent - OK"
+  tail -f  /opt/ecloud/i686_Linux/APL.txt
 fi
-tail -f /opt/ecloud/i686_Linux/APL.txt
