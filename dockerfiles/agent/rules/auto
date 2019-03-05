@@ -21,9 +21,9 @@ TEMPDIR_CONF=${TEMPDIR:=$TEMPDIR_CONF}
 EFS_ID=${EFS_ID:=0}
 
 if  [  -z "${EFS_ID##*[!0-9]*}" ] ; then 
-    echo "<--Log--$0> | WARNING: EFS_ID - non-numeric value, EFS_ID=$EFS_ID"
+    echo "<--Log--$0> | WARNING: EFS_ID - not a digit. EFS_ID=$EFS_ID."
+    echo "<--Log--$0> | INFORMATION: Going to set EFS_ID to the 0. If any errors - pay attantion to current message"
     EFS_ID=0
-    echo "<--Log--$0> | INFORMATION: Setting EFS_ID to default value, EFS_ID=0"
 fi
 export EFS_ID
 
@@ -39,10 +39,10 @@ echo SECURE_CONSOLE_CONF=$SECURE_CONSOLE_CONF
 echo SHARED_AGENT_NUMBER_CONF=$SHARED_AGENT_NUMBER_CONF
 echo TEMPDIR_CONF=$TEMPDIR_CONF
 
-/opt/ecloud/i686_Linux/64/bin/ecconfig -cm "$CMHOST_CONF" -numagents $AGENT_NUMBER_CONF -lsfhost "$LSF_HOST_CONF" -tempdir "$TEMPDIR_CONF"
+/opt/ecloud/i686_Linux/64/bin/ecconfig  -cm "$CMHOST_CONF"  -numagents $AGENT_NUMBER_CONF  -lsfhost "$LSF_HOST_CONF" -tempdir "$TEMPDIR_CONF"
 
 # Start erunner
-echo "<--Log--$0> | Run /opt/ecloud/rules/erunner"
+echo "<--Log--$0> | Going to run /opt/ecloud/rules/erunner"
 /opt/ecloud/rules/erunner  start
 status=$?
 
@@ -54,13 +54,20 @@ else
 fi
 
 # Start ecagent
-echo "<--Log--$0> | Run /opt/ecloud/rules/ecagent"
+echo "<--Log--$0> | Going to run /opt/ecloud/rules/ecagent"
 /opt/ecloud/rules/ecagent  start
 status=$?
 if [ $status -ne 0 ]; then
   echo "<--Log--$0> | Failed to start /opt/ecloud/rules/ecagent: $status"
+  if [ $status -eq 3 ]; then
+     echo "<--Log--$0> | ERROR: EFS_ID is out of range returned status=$status"
+     echo "<--Log--$0> | EFS_ID must be from range [0..("Count of machine CPU" - 1) ], by default EFS_ID eq. 0"
+     exit 1
+  fi
+  echo "<--Log--$0> | Exit from container, as ecagent is not started. See details at /var/logs/"
   exit 1
 else 
   echo "<--Log--$0> | Status ecagent - OK"
-  tail -f  /opt/ecloud/i686_Linux/APL.txt
 fi
+
+tail -f /opt/ecloud/i686_Linux/APL.txt
