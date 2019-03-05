@@ -5,5 +5,5 @@ echo "<--Log--$0> | /opt/ecloud/i686_Linux/64/bin/clustermanager start "
 (/opt/ecloud/i686_Linux/64/bin/clustermanager start) &
 (tail -n 4 -f /var/log/cmlog) &
 (tail -n 4 -f /opt/ecloud/i686_Linux/logs/accelerator.log) &
-
-bash
+tail -f  /opt/ecloud/i686_Linux/APL.txt
+#bash

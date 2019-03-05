@@ -1,73 +1,93 @@
 #!/bin/sh
 
-CMHOST_CONF=localhost
-CMPORT_CONF=8030
-LSF_HOST_CONF=n
-MAX_OPEN_FDS_CONF=
-SECURE_CONSOLE_CONF=n
-AGENT_NUMBER_CONF=1
-SHARED_AGENT_NUMBER_CONF=1
-TEMPDIR_CONF=/tmp
+# Setup configuration values.  Some of these must be provided when the
+# container is deployed; others may optionally be provided; and still others
+# are hardcoded to specific values that are used because we're running the
+# agent inside a container.
 
-CMHOST_CONF=${CM_HOST:=$CMHOST_CONF}
-CMHOST_CONF=${CMHOST:=$CMHOST_CONF}
-CMPORT_CONF=${CMPORT:=$CMPORT_CONF}
-INSTALL_ERUNNERD_CONF=${INSTALL_ERUNNERD:=$INSTALL_ERUNNERD_CONF}
-LOG_REMOVE_CONF=${LOG_REMOVE:=$LOG_REMOVE_CONF}
-LSF_HOST_CONF=${LSF_HOST:=$LSF_HOST_CONF}
-MAX_OPEN_FDS_CONF=${MAX_OPEN_FDS:=$MAX_OPEN_FDS_CONF}
-SECURE_CONSOLE_CONF=${SECURE_CONSOLE:=$SECURE_CONSOLE_CONF}
-TEMPDIR_CONF=${TEMPDIR:=$TEMPDIR_CONF}
-EFS_ID=${EFS_ID:=0}
+# Required values.  If these are not provided it's a fatal error.
 
-if  [  -z "${EFS_ID##*[!0-9]*}" ] ; then 
-    echo "<--Log--$0> | WARNING: EFS_ID - not a digit. EFS_ID=$EFS_ID."
-    echo "<--Log--$0> | INFORMATION: Going to set EFS_ID to the 0. If any errors - pay attantion to current message"
-    EFS_ID=0
-fi
-export EFS_ID
+CM_HOST_AND_PORT=${CM_HOST_AND_PORT:=}
+AGENT_RESOURCE=${AGENT_RESOURCE:=}
 
-echo CMHOST_CONF=$CMHOST_CONF
-echo CMPORT_CONF=$CMPORT_CONF
-echo INSTALL_ERUNNERD_CONF=$INSTALL_ERUNNERD_CONF
-echo LOG_REMOVE_CONF=$LOG_REMOVE_CONF
-echo LSF_HOST_CONF=$LSF_HOST_CONF
-echo MAX_OPEN_FDS_CONF=$MAX_OPEN_FDS_CONF
-echo AGENT_NUMBER_CONF=$AGENT_NUMBER_CONF
-
-echo SECURE_CONSOLE_CONF=$SECURE_CONSOLE_CONF
-echo SHARED_AGENT_NUMBER_CONF=$SHARED_AGENT_NUMBER_CONF
-echo TEMPDIR_CONF=$TEMPDIR_CONF
-
-/opt/ecloud/i686_Linux/64/bin/ecconfig  -cm "$CMHOST_CONF"  -numagents $AGENT_NUMBER_CONF  -lsfhost "$LSF_HOST_CONF" -tempdir "$TEMPDIR_CONF"
-
-# Start erunner
-echo "<--Log--$0> | Going to run /opt/ecloud/rules/erunner"
-/opt/ecloud/rules/erunner  start
-status=$?
-
-if [ $status -ne 0 ]; then
-  echo "<--Log--$0> Failed to start /opt/ecloud/rules/erunner: $status"
-  exit $status
-else
-  echo "<--Log--$0> | Status erunner - OK " 
+if [ -z "$CM_HOST_AND_PORT" ] ; then
+    echo "CM_HOST_AND_PORT must be specified."
+    exit 1
 fi
 
-# Start ecagent
-echo "<--Log--$0> | Going to run /opt/ecloud/rules/ecagent"
-/opt/ecloud/rules/ecagent  start
-status=$?
-if [ $status -ne 0 ]; then
-  echo "<--Log--$0> | Failed to start /opt/ecloud/rules/ecagent: $status"
-  if [ $status -eq 3 ]; then
-     echo "<--Log--$0> | ERROR: EFS_ID is out of range returned status=$status"
-     echo "<--Log--$0> | EFS_ID must be from range [0..("Count of machine CPU" - 1) ], by default EFS_ID eq. 0"
-     exit 1
-  fi
-  echo "<--Log--$0> | Exit from container, as ecagent is not started. See details at /var/logs/"
-  exit 1
-else 
-  echo "<--Log--$0> | Status ecagent - OK"
+if [ -z "$AGENT_RESOURCE" ] ; then
+    echo "AGENT_RESOURCE must be specified."
+    exit 1
 fi
 
-tail -f /opt/ecloud/i686_Linux/APL.txt
+# Optional values.  We have reasonable defaults for these if they are not
+# specified, but the user could provide different values if they wished.
+
+MAX_OPEN_FDS=${MAX_OPEN_FDS:=}
+SECURE_CONSOLE=${SECURE_CONSOLE:=n}
+TEMPDIR=${TEMPDIR:=/tmp}
+EMAKESECURITY=${EMAKESECURITY:=}
+
+# Hardcoded values.  We force these to values that make sense for a container.
+
+EFS_ID=auto
+AGENT_COUNT=1
+
+# Configuration is done.
+
+INSTDIR=/opt/ecloud
+if [ ! -d "$INSTDIR" ]; then
+    echo "ERROR: Unable to locate install dir"
+    exit 1
+fi
+BINDIR=$INSTDIR/i686_Linux/64/bin
+
+mkdir -p "$INSTDIR/i686_Linux/tmp"
+mkdir -p "$INSTDIR/i686_Linux/logs"
+
+# Set cwd, umask and PATH to known safe values.
+
+cd /var/run
+ulimit -c unlimited
+umask 022
+PATH=/usr/bin:/bin
+
+# Apply the file descriptor limit, if any.
+
+if [ -n "$MAX_OPEN_FDS" ] ; then
+    ulimit -n $MAX_OPEN_FDS
+    echo "INFO: max open fds set to $MAX_OPEN_FDS"
+fi
+
+# Start the diskcache.  NB: use a subshell to launch it, otherwise it won't
+# properly daemonize itself because it thinks it's already a daemon because
+# in a container this script is given PID 1.
+
+/bin/sh -c "echo 'INFO: auto starting diskcache...' \
+    && $BINDIR/diskcache $BINDIR/rundiskcache \
+    -logfile /var/log/diskcache.log \
+    -numagents $AGENT_COUNT \
+    -tempdir \"$TEMPDIR\""
+
+# Start the agent.  Unlike in a non-container environment, this will run the
+# agent in the foreground so the agent itself is the controlling process for
+# the container.  When the agent exits so does the container, and vice versa.
+
+echo "INFO: auto starting agent..."
+$BINDIR/ecagent $BINDIR/runagent \
+    -cm $CM_HOST_AND_PORT \
+    -secureconsole $SECURE_CONSOLE \
+    -diskcacheportfile /var/run/diskcache.port \
+    -daemon no \
+    -redirect 0 \
+    -efsid "$EFS_ID" \
+    -numagents $AGENT_COUNT \
+    -tempdir "$TEMPDIR" \
+    -emakesecurity "$EMAKESECURITY" \
+    -resource "$AGENT_RESOURCE" \
+    -trace "$TRACE"
+
+# Stop the diskcache, though we don't really care if it stops cleanly -- the
+# container is getting shutdown and will soon be thrown away anyway.
+
+/usr/bin/pkill -TERM -f -P 1 "diskcache" > /dev/null 2>&1

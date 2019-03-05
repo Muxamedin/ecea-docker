@@ -10,10 +10,9 @@ FROM  yjjy0921/redhat7.2
 #2
 #RUN yum install -y gcc;  yum clean all
 #3
-RUN  /usr/sbin/useradd -d /opt/ecloud -c "" "eacmuser" 
+RUN  /usr/sbin/useradd -d /opt/ecloud -c "" "eacmuser" ;  /usr/sbin/groupadd nogroup
 # ---------------------------------------------------
 #4
-#docker >= 17.09
 ADD   ecloud.tar.gz /
 #5 -----------------------------------------
 COPY rules /opt/ecloud/rules
