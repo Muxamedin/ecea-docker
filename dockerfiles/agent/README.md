@@ -100,7 +100,7 @@ Step 4. Start up Docker image with the following commands:
 ## Command
 
 ```bash
-docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e AGENT_NUMBER=8  --device /dev/efs --net=host --name=ec_agent  agent_10.0_rh_alpha
+docker run --privileged=true  -i -d -t  -e CMHOST=10.200.1.97 -e -e AGENT_RESOURCE=linux  --device /dev/efs --net=host --name=ec_agent  agent_11.0_rh_alpha
 ```
 
 By default agent will be pointed on CM which placed on localhost 
@@ -119,13 +119,6 @@ or
 ```
 -e CMHOST=10.200.1.97:8030
 ```
-
-To choose number of agents you can add option AGENT_NUMBER 
-
-```
--e AGENT_NUMBER=digit_number_agents
-```
-
 ## Work with container :
 
 ```bash

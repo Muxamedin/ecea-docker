@@ -46,11 +46,11 @@ Example for starting agents :
 ```bash
    docker run --privileged=true \
    -i -d -t \
-   -e CMHOST=10.200.1.97 -e AGENT_NUMBER=2 \
+   -e CMHOST=10.200.1.97 -e  \
    --device /dev/efs \
    --net=host \
    --name=ec_agent \
-   agent_10.0_rh_alpha
+   agent_11.0_rh_alpha
 ```
 where :
 
